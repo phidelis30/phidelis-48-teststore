@@ -306,18 +306,14 @@
 /* --------------------------------------------------------------------------
    3a. Content position modifiers
    -------------------------------------------------------------------------- */
-.ch__content--bottom-left {
-  align-items: flex-start;
-  justify-content: flex-end;
-}
-
-.ch__content--bottom-right {
-  align-items: flex-end;
-  justify-content: flex-end;
-}
-
+/* Top row */
 .ch__content--top-left {
   align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.ch__content--top-center {
+  align-items: center;
   justify-content: flex-start;
 }
 
@@ -326,14 +322,52 @@
   justify-content: flex-start;
 }
 
+/* Center row */
+.ch__content--center-left {
+  align-items: flex-start;
+  justify-content: center;
+}
+
 .ch__content--center {
   align-items: center;
   justify-content: center;
 }
 
-.ch__content--center .ch__content-inner {
+.ch__content--center-right {
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* Bottom row */
+.ch__content--bottom-left {
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.ch__content--bottom-center {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.ch__content--bottom-right {
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+/* Center-column text alignment */
+.ch__content--top-center .ch__content-inner,
+.ch__content--center .ch__content-inner,
+.ch__content--bottom-center .ch__content-inner {
   text-align: center;
   align-items: center;
+}
+
+/* Right-column text alignment */
+.ch__content--top-right .ch__content-inner,
+.ch__content--center-right .ch__content-inner,
+.ch__content--bottom-right .ch__content-inner {
+  text-align: right;
+  align-items: flex-end;
 }
 
 /* --------------------------------------------------------------------------
