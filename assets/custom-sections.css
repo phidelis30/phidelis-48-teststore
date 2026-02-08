@@ -1,6 +1,6 @@
 /* ==========================================================================
    Custom Sections Stylesheet
-   Covers: Banner Section (Announcement Bar) & Product Grid Section (with Popup)
+   Covers: Banner Section , Hero Section, (Announcement Bar) & Product Grid Section (with Popup)
    Author: Ecomexperts Test
    ========================================================================== */
 
@@ -543,7 +543,8 @@
 .custom-product-grid {
   max-width: var(--custom-section-max-width);
   margin: 0 auto;
-  padding: 60px 20px;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
 }
 
 /* Section heading above the grid */
@@ -555,10 +556,10 @@
   color: var(--custom-color-black);
 }
 
-/* 3-column grid layout for product cards */
+/* Dynamic column grid layout for product cards */
 .custom-product-grid__grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(var(--cpg-columns, 3), 1fr);
   gap: var(--custom-grid-gap);
 }
 
@@ -916,12 +917,8 @@
 
 /* Mobile: stacked popup and adjusted grid */
 @media screen and (max-width: 749px) {
-  .custom-product-grid {
-    padding: 40px 16px;
-  }
-
   .custom-product-grid__grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(var(--cpg-columns-mobile, 2), 1fr);
     gap: 12px;
   }
 

@@ -1,8 +1,23 @@
 {{ 'custom-sections.css' | asset_url | stylesheet_tag }}
 
+{%- liquid
+  assign section_width = section.settings.section_width | default: 'full-width'
+  assign columns = section.settings.columns | default: 3
+  assign columns_mobile = section.settings.columns_mobile | default: 2
+-%}
+
+{%- comment -%} Scoped styles for dynamic customizer values {%- endcomment -%}
+<style>
+  #ProductGrid-{{ section.id }} {
+    --cpg-columns: {{ columns }};
+    --cpg-columns-mobile: {{ columns_mobile }};
+  }
+</style>
+
 <section
   id="ProductGrid-{{ section.id }}"
-  class="custom-product-grid"
+  class="custom-product-grid section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style"
+  style="{% render 'spacing-padding', settings: section.settings %}"
   data-section-id="{{ section.id }}"
   data-section-type="custom-product-grid"
 >
@@ -538,22 +553,98 @@
   "class": "custom-product-grid-section",
   "settings": [
     {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.section_width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        }
+      ],
+      "default": "full-width"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "t:settings.columns"
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "t:settings.columns",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "label": "t:settings.mobile_columns",
+      "min": 1,
+      "max": 2,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "t:content.text"
+    },
+    {
       "type": "text",
       "id": "heading",
-      "label": "Section Heading",
+      "label": "t:settings.heading",
       "default": "Featured Products"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 60
     }
   ],
   "blocks": [
     {
       "type": "product_card",
-      "name": "Product",
-      "limit": 6,
+      "name": "t:names.product",
+      "limit": 12,
       "settings": [
         {
           "type": "product",
           "id": "product",
-          "label": "Product"
+          "label": "t:names.product"
         }
       ]
     }
