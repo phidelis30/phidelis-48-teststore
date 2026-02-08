@@ -430,6 +430,7 @@
   transition: all var(--custom-transition-speed) ease;
   margin-top: 8px;
   white-space: nowrap;
+  width: fit-content;
 }
 
 /* Primary: dark bg, white text */
