@@ -17,6 +17,11 @@
     --cpg-heading-size: {{ heading_size }}px;
     --cpg-heading-align: {{ heading_alignment }};
   }
+
+  /* Hide cards beyond the products_to_show limit */
+  #ProductGrid-{{ section.id }} .custom-product-grid__grid > :nth-child(n + {{ products_to_show | plus: 1 }}) {
+    display: none;
+  }
 </style>
 
 <section
@@ -33,51 +38,12 @@
   {%- endif -%}
 
   {%- comment -%}
-    Product cards grid — rendered via manual loop to respect products_to_show limit.
-    Each block is a theme-level "custom-product-card" block
-    that can also be reused in other sections via @theme.
+    Product cards grid — rendered via content_for 'blocks' so theme-level
+    blocks (blocks/custom-product-card.liquid) render correctly.
+    The products_to_show limit is handled via scoped CSS :nth-child rule above.
   {%- endcomment -%}
   <div class="custom-product-grid__grid">
-    {%- for block in section.blocks limit: products_to_show -%}
-      {%- assign product = block.settings.product -%}
-      {%- if product != blank -%}
-        <div
-          class="custom-product-grid__card"
-          data-product-handle="{{ product.handle }}"
-          data-block-id="{{ block.id }}"
-          {{ block.shopify_attributes }}
-        >
-          <div class="custom-product-grid__image-wrapper">
-            {%- if product.featured_image != blank -%}
-              <img
-                class="custom-product-grid__image"
-                src="{{ product.featured_image | image_url: width: 600 }}"
-                alt="{{ product.featured_image.alt | escape }}"
-                width="600"
-                height="600"
-                loading="lazy"
-              >
-            {%- else -%}
-              {{ 'product-1' | placeholder_svg_tag: 'custom-product-grid__image' }}
-            {%- endif -%}
-
-            <button
-              class="custom-product-grid__hotspot"
-              type="button"
-              aria-label="View {{ product.title | escape }} details"
-              data-popup-trigger="{{ product.handle }}"
-            >
-              <span class="custom-product-grid__hotspot-icon">+</span>
-            </button>
-          </div>
-
-          <div class="custom-product-grid__info">
-            <h3 class="custom-product-grid__title">{{ product.title }}</h3>
-            <p class="custom-product-grid__price">{{ product.price | money }}</p>
-          </div>
-        </div>
-      {%- endif -%}
-    {%- endfor -%}
+    {%- content_for 'blocks' -%}
   </div>
 
   {%- comment -%}
