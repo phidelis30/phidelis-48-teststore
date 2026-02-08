@@ -271,7 +271,7 @@
         "heading": "Featured Products",
         "heading_alignment": "left",
         "heading_size": 24,
-        "padding-block-start": 0,
+        "padding-block-start": 8,
         "padding-block-end": 60
       }
     }
