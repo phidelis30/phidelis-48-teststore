@@ -547,11 +547,11 @@
   color: var(--color-foreground);
 }
 
-/* Section heading above the grid — left-aligned per design */
+/* Section heading above the grid — size & alignment driven by section settings */
 .custom-product-grid__heading {
-  font-size: 20px;
+  font-size: var(--cpg-heading-size, 20px);
   font-weight: 400;
-  text-align: left;
+  text-align: var(--cpg-heading-align, left);
   margin-bottom: 24px;
   color: var(--custom-color-gray);
 }
@@ -885,7 +885,7 @@
   }
 
   .custom-product-grid__heading {
-    font-size: 18px;
+    font-size: calc(var(--cpg-heading-size, 20px) * 0.9);
   }
 }
 
@@ -897,7 +897,7 @@
   }
 
   .custom-product-grid__heading {
-    font-size: 16px;
+    font-size: calc(var(--cpg-heading-size, 20px) * 0.8);
     margin-bottom: 16px;
   }
 
