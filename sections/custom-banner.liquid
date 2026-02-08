@@ -1,28 +1,3 @@
-{% comment %}
-  ============================================================================
-  Section: Custom Banner (Announcement Bar)
-  ============================================================================
-  A slim promotional banner bar matching the Figma design:
-    - Desktop: Horizontal bar with logo (left), text (center), CTA button (right)
-    - Mobile: Shows logo centered with hamburger toggle
-    - Mobile panel: Expands to show full text + CTA button when toggled
-
-  Customizer Settings:
-    - Background color & color scheme
-    - Padding top / bottom
-    - Section width (full-width, normal, narrow)
-    - Logo: image upload OR text fallback
-    - Promotional text
-    - Button text, link, background color, text color
-    - Button animation on hover
-
-  Requirements:
-    - No jQuery, vanilla JavaScript only
-    - Well-structured, commented, and efficient code
-    - Built from scratch (no Dawn ready-made sections)
-  ============================================================================
-{% endcomment %}
-
 {{ 'custom-sections.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
