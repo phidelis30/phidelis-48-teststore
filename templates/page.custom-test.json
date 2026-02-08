@@ -126,53 +126,153 @@
     "custom-product-grid": {
       "type": "custom-product-grid",
       "blocks": {
-        "product_1": {
+        "custom_product_card_EJUyme": {
           "type": "custom-product-card",
+          "name": "Custom Product Card",
           "settings": {
-            "product": "black-leather-bag"
-          }
+            "product": "",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         },
-        "product_2": {
+        "custom_product_card_fKcUc9": {
           "type": "custom-product-card",
+          "name": "Custom Product Card",
           "settings": {
-            "product": "blue-silk-tuxedo"
-          }
+            "product": "floral-white-top",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         },
-        "product_3": {
+        "custom_product_card_QNzkrw": {
           "type": "custom-product-card",
+          "name": "Custom Product Card",
           "settings": {
-            "product": "chequered-red-shirt"
-          }
+            "product": "dark-denim-top",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         },
-        "product_4": {
+        "custom_product_card_xVgq6i": {
           "type": "custom-product-card",
+          "name": "Custom Product Card",
           "settings": {
-            "product": "classic-leather-jacket"
-          }
+            "product": "classic-leather-jacket",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         },
-        "product_5": {
+        "custom_product_card_pU3Bma": {
           "type": "custom-product-card",
+          "name": "Custom Product Card",
           "settings": {
-            "product": "classic-varsity-top"
-          }
+            "product": "chequered-red-shirt",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         },
-        "product_6": {
+        "custom_product_card_GbPd44": {
           "type": "custom-product-card",
+          "name": "Custom Product Card",
           "settings": {
-            "product": "dark-denim-top"
-          }
+            "product": "blue-silk-tuxedo",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "custom_product_card_dFWnga": {
+          "type": "custom-product-card",
+          "name": "Custom Product Card",
+          "settings": {
+            "product": "black-leather-bag",
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         }
       },
       "block_order": [
-        "product_1",
-        "product_2",
-        "product_3",
-        "product_4",
-        "product_5",
-        "product_6"
+        "custom_product_card_EJUyme",
+        "custom_product_card_fKcUc9",
+        "custom_product_card_QNzkrw",
+        "custom_product_card_xVgq6i",
+        "custom_product_card_pU3Bma",
+        "custom_product_card_GbPd44",
+        "custom_product_card_dFWnga"
       ],
       "settings": {
-        "heading": "Featured Products"
+        "section_width": "full-width",
+        "color_scheme": "",
+        "columns": 4,
+        "columns_mobile": "2",
+        "products_to_show": 6,
+        "heading": "Featured Products",
+        "heading_alignment": "left",
+        "heading_size": 24,
+        "padding-block-start": 60,
+        "padding-block-end": 60
       }
     }
   },
