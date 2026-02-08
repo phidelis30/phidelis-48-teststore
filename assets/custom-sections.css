@@ -288,70 +288,78 @@
 }
 
 /* Content overlay: absolutely positioned over the image */
+/* Multiple containers may exist (one per position group) */
 .ch__content {
   position: absolute;
   inset: 0;
   display: flex;
   padding: 40px;
+  pointer-events: none;
 }
 
-/* Content inner: constrains text width */
+/* Content inner: constrains text width, re-enables click */
 .ch__content-inner {
   max-width: var(--ch-content-width, 50%);
   display: flex;
   flex-direction: column;
   gap: 16px;
+  pointer-events: auto;
 }
 
 /* --------------------------------------------------------------------------
-   3a. Content position modifiers
+   3a. Content position modifiers (9-point grid)
+   --------------------------------------------------------------------------
+   flex-direction: row (default) →
+     justify-content = horizontal (left / center / right)
+     align-items     = vertical   (top  / center / bottom)
    -------------------------------------------------------------------------- */
+
 /* Top row */
 .ch__content--top-left {
-  align-items: flex-start;
   justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .ch__content--top-center {
-  align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .ch__content--top-right {
-  align-items: flex-end;
-  justify-content: flex-start;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
 
 /* Center row */
 .ch__content--center-left {
-  align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .ch__content--center {
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .ch__content--center-right {
-  align-items: flex-end;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 /* Bottom row */
 .ch__content--bottom-left {
-  align-items: flex-start;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  align-items: flex-end;
 }
 
 .ch__content--bottom-center {
-  align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .ch__content--bottom-right {
-  align-items: flex-end;
   justify-content: flex-end;
+  align-items: flex-end;
 }
 
 /* Center-column text alignment */

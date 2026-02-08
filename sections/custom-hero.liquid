@@ -2,8 +2,9 @@
   ============================================================================
   Section: Custom Hero
   ============================================================================
-  Content (caption, heading, description, button) is managed via blocks,
-  allowing merchants to add, remove, and reorder elements freely.
+  Content (caption, heading, description, button) is managed via blocks.
+  Each block has its own Content Position setting (9-point grid).
+  Blocks at the same position are grouped and stack vertically.
 {% endcomment %}
 
 {{ 'custom-sections.css' | asset_url | stylesheet_tag }}
@@ -11,7 +12,6 @@
 {%- liquid
   assign section_width = section.settings.section_width | default: 'full-width'
   assign content_width = section.settings.content_width | default: 50
-  assign content_position = section.settings.content_position | default: 'bottom-left'
   assign overlay_opacity = section.settings.overlay_opacity | default: 0
   assign min_height = section.settings.min_height | default: 500
   assign min_height_mobile = section.settings.min_height_mobile | default: 400
@@ -76,48 +76,69 @@
     {%- endif -%}
   </div>
 
-  {%- comment -%} Text content overlay — rendered from blocks {%- endcomment -%}
+  {%- comment -%}
+    Render blocks grouped by position.
+    Blocks sharing the same position stack vertically in one container.
+  {%- endcomment -%}
   {%- if section.blocks.size > 0 -%}
-    <div class="ch__content ch__content--{{ content_position }}">
-      <div class="ch__content-inner">
+    {%- assign all_positions = 'top-left,top-center,top-right,center-left,center,center-right,bottom-left,bottom-center,bottom-right' | split: ',' -%}
 
-        {%- for block in section.blocks -%}
-          {%- case block.type -%}
+    {%- for position in all_positions -%}
+      {%- assign has_blocks = false -%}
+      {%- for block in section.blocks -%}
+        {%- assign block_pos = block.settings.content_position | default: 'bottom-left' -%}
+        {%- if block_pos == position -%}
+          {%- assign has_blocks = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
 
-            {%- when 'caption' -%}
-              {%- if block.settings.text != blank -%}
-                <p class="ch__subtitle" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+      {%- if has_blocks -%}
+        <div class="ch__content ch__content--{{ position }}">
+          <div class="ch__content-inner">
+
+            {%- for block in section.blocks -%}
+              {%- assign block_pos = block.settings.content_position | default: 'bottom-left' -%}
+              {%- if block_pos == position -%}
+                {%- case block.type -%}
+
+                  {%- when 'caption' -%}
+                    {%- if block.settings.text != blank -%}
+                      <p class="ch__subtitle" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+                    {%- endif -%}
+
+                  {%- when 'heading' -%}
+                    {%- if block.settings.text != blank -%}
+                      <h2 class="ch__heading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+                    {%- endif -%}
+
+                  {%- when 'description' -%}
+                    {%- if block.settings.text != blank -%}
+                      <p class="ch__description" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+                    {%- endif -%}
+
+                  {%- when 'button' -%}
+                    {%- if block.settings.label != blank -%}
+                      {%- assign btn_style = block.settings.style | default: 'primary' -%}
+                      <a
+                        href="{{ block.settings.link }}"
+                        class="ch__btn ch__btn--{{ btn_style }}"
+                        aria-label="{{ block.settings.label | escape }}"
+                        {{ block.shopify_attributes }}
+                      >
+                        <span>{{ block.settings.label }}</span>
+                        <span class="ch__btn-arrow" aria-hidden="true">&rarr;</span>
+                      </a>
+                    {%- endif -%}
+
+                {%- endcase -%}
               {%- endif -%}
+            {%- endfor -%}
 
-            {%- when 'heading' -%}
-              {%- if block.settings.text != blank -%}
-                <h2 class="ch__heading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
-              {%- endif -%}
-
-            {%- when 'description' -%}
-              {%- if block.settings.text != blank -%}
-                <p class="ch__description" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
-              {%- endif -%}
-
-            {%- when 'button' -%}
-              {%- if block.settings.label != blank -%}
-                {%- assign btn_style = block.settings.style | default: 'primary' -%}
-                <a
-                  href="{{ block.settings.link }}"
-                  class="ch__btn ch__btn--{{ btn_style }}"
-                  aria-label="{{ block.settings.label | escape }}"
-                  {{ block.shopify_attributes }}
-                >
-                  <span>{{ block.settings.label }}</span>
-                  <span class="ch__btn-arrow" aria-hidden="true">&rarr;</span>
-                </a>
-              {%- endif -%}
-
-          {%- endcase -%}
-        {%- endfor -%}
-
-      </div>
-    </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
   {%- endif -%}
 </section>
 
@@ -172,50 +193,6 @@
       "step": 10,
       "unit": "px",
       "default": 400
-    },
-    {
-      "type": "select",
-      "id": "content_position",
-      "label": "t:settings.content_position",
-      "options": [
-        {
-          "value": "top-left",
-          "label": "t:options.top_left"
-        },
-        {
-          "value": "top-center",
-          "label": "t:options.top_center"
-        },
-        {
-          "value": "top-right",
-          "label": "t:options.top_right"
-        },
-        {
-          "value": "center-left",
-          "label": "t:options.center_left"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "center-right",
-          "label": "t:options.center_right"
-        },
-        {
-          "value": "bottom-left",
-          "label": "t:options.bottom_left"
-        },
-        {
-          "value": "bottom-center",
-          "label": "t:options.bottom_center"
-        },
-        {
-          "value": "bottom-right",
-          "label": "t:options.bottom_right"
-        }
-      ],
-      "default": "bottom-left"
     },
     {
       "type": "range",
@@ -286,6 +263,23 @@
           "type": "text",
           "id": "text",
           "label": "t:settings.text"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "t:settings.content_position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
         }
       ]
     },
@@ -298,6 +292,23 @@
           "id": "text",
           "label": "t:settings.heading",
           "default": "The Gift Guide"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "t:settings.content_position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
         }
       ]
     },
@@ -310,6 +321,23 @@
           "id": "text",
           "label": "t:names.description",
           "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season."
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "t:settings.content_position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
         }
       ]
     },
@@ -333,16 +361,27 @@
           "id": "style",
           "label": "t:settings.display",
           "options": [
-            {
-              "value": "primary",
-              "label": "t:options.button_primary"
-            },
-            {
-              "value": "secondary",
-              "label": "t:options.button_secondary"
-            }
+            { "value": "primary", "label": "t:options.button_primary" },
+            { "value": "secondary", "label": "t:options.button_secondary" }
           ],
           "default": "primary"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "t:settings.content_position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
         }
       ]
     }
