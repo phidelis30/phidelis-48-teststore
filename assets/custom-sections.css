@@ -28,31 +28,23 @@
    Mobile:  Logo centered + hamburger toggle → expands to full panel
    ========================================================================== */
 
-/* Section container: holds the bar and hidden mobile panel */
+/* Section container: inherits colors from color-{{ scheme }} class */
 .cb {
-  background-color: var(--cb-bg, #ffffff);
-  color: var(--cb-text, #000000);
-  border-bottom: 1px solid var(--custom-color-border);
+  border-bottom: 1px solid var(--color-border, var(--custom-color-border));
   position: relative;
 }
-
-/* Width modifiers */
-.cb--full { width: 100%; }
-.cb--normal .cb__bar,
-.cb--normal .cb__panel { max-width: 1200px; margin: 0 auto; }
-.cb--narrow .cb__bar,
-.cb--narrow .cb__panel { max-width: 960px; margin: 0 auto; }
 
 /* --------------------------------------------------------------------------
    2a. DESKTOP BAR
    -------------------------------------------------------------------------- */
 
 /* Main horizontal bar: 3-column flex layout */
+/* Padding is handled by the spacing-style class + spacing-padding snippet */
 .cb__bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--cb-padding-top, 12px) 24px var(--cb-padding-bottom, 12px);
+  padding-inline: 24px;
   gap: 16px;
 }
 
@@ -61,13 +53,13 @@
   flex-shrink: 0;
 }
 
-/* Logo as text: bold uppercase brand name */
+/* Logo as text: bold uppercase brand name — inherits color from color scheme */
 .cb__logo-text {
   font-size: 16px;
   font-weight: 800;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--cb-text, #000000);
+  color: var(--color-foreground-heading, currentColor);
   white-space: nowrap;
 }
 
@@ -78,14 +70,14 @@
   object-fit: contain;
 }
 
-/* Center promo text */
+/* Center promo text — inherits color from color scheme */
 .cb__promo-text {
   flex: 1;
   text-align: center;
   font-size: 14px;
   font-weight: 400;
   margin: 0;
-  color: var(--cb-text, #000000);
+  color: var(--color-foreground, currentColor);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -144,7 +136,7 @@
   border: none;
   cursor: pointer;
   padding: 4px;
-  color: var(--cb-text, #000000);
+  color: var(--color-foreground, currentColor);
   flex-shrink: 0;
 }
 
@@ -160,35 +152,21 @@
    2b. MOBILE PANEL (hidden by default, slides down when toggled)
    -------------------------------------------------------------------------- */
 
-/* Panel: absolutely positioned, slides from behind the bar */
+/* Panel: slides down from the bar — inherits bg from color scheme */
 .cb__panel {
   display: none;
   flex-direction: column;
   align-items: center;
   gap: 20px;
   padding: 24px 24px 32px;
-  background-color: var(--cb-bg, #ffffff);
-  border-top: 1px solid var(--custom-color-border);
+  border-top: 1px solid var(--color-border, var(--custom-color-border));
 }
 
-/* Panel logo: larger centered version */
-.cb__panel-logo {
-  text-align: center;
-}
-
-.cb__panel-logo-text {
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--cb-text, #000000);
-}
-
-/* Panel promo text */
+/* Panel promo text — inherits color from color scheme */
 .cb__panel-promo {
   font-size: 14px;
   font-weight: 400;
-  color: var(--cb-text, #000000);
+  color: var(--color-foreground, currentColor);
   text-align: center;
   margin: 0;
 }
@@ -234,21 +212,19 @@
    -------------------------------------------------------------------------- */
 
 @media screen and (max-width: 749px) {
-  /* Bar: show toggle, hide promo text and CTA */
+  /* Bar: reduce horizontal padding on mobile */
   .cb__bar {
-    padding: var(--cb-padding-top, 10px) 16px var(--cb-padding-bottom, 10px);
+    padding-inline: 16px;
   }
 
+  /* Hide promo text and CTA button on mobile bar */
   .cb__promo-text { display: none; }
   .cb__btn { display: none; }
 
   /* Show mobile toggle */
   .cb__toggle { display: flex; }
 
-  /* Logo centered between toggle (left position via order) */
-  .cb__bar {
-    justify-content: space-between;
-  }
+  /* Logo centered, toggle on the left via order */
   .cb__toggle { order: -1; }
   .cb__logo { flex: 1; text-align: center; }
 
