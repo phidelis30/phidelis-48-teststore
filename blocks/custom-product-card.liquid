@@ -1,0 +1,71 @@
+{% comment %}
+  ============================================================================
+  Block: Custom Product Card
+  ============================================================================
+  Renders a product image with a centered hotspot button.
+  Designed for use inside the Custom Product Grid section,
+  but can also be added to any section that accepts @theme blocks.
+{% endcomment %}
+
+{%- assign product = block.settings.product -%}
+
+{%- if product != blank -%}
+  <div
+    class="custom-product-grid__card"
+    data-product-handle="{{ product.handle }}"
+    data-block-id="{{ block.id }}"
+    {{ block.shopify_attributes }}
+  >
+    {%- comment -%} Product image with hotspot button {%- endcomment -%}
+    <div class="custom-product-grid__image-wrapper">
+      {%- if product.featured_image != blank -%}
+        <img
+          class="custom-product-grid__image"
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          width="600"
+          height="600"
+          loading="lazy"
+        >
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'custom-product-grid__image' }}
+      {%- endif -%}
+
+      {%- comment -%} Hotspot circle button — opens popup on click {%- endcomment -%}
+      <button
+        class="custom-product-grid__hotspot"
+        type="button"
+        aria-label="View {{ product.title | escape }} details"
+        data-popup-trigger="{{ product.handle }}"
+      >
+        <span class="custom-product-grid__hotspot-icon">+</span>
+      </button>
+    </div>
+
+    {%- comment -%} Product title and price (hidden by default via CSS, available for SEO) {%- endcomment -%}
+    <div class="custom-product-grid__info">
+      <h3 class="custom-product-grid__title">{{ product.title }}</h3>
+      <p class="custom-product-grid__price">{{ product.price | money }}</p>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Custom Product Card",
+  "tag": null,
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:names.product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Product Card",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}
