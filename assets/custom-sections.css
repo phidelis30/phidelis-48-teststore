@@ -48,9 +48,13 @@
   gap: 16px;
 }
 
-/* Logo container */
+/* Logo container: links to home page, no underline */
 .cb__logo {
   flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
 }
 
 /* Logo as text: bold uppercase brand name — inherits color from color scheme */
@@ -88,7 +92,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 20px;
+  padding: 8px 20px;
   background: var(--cb-btn-bg, #E8D44D);
   color: var(--cb-btn-text, #000000);
   border: 1px solid var(--cb-btn-border, #E8D44D);

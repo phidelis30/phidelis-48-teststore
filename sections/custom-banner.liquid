@@ -2,18 +2,6 @@
   ============================================================================
   Section: Custom Banner (Announcement Bar)
   ============================================================================
-  A slim promotional banner bar matching the Figma design:
-    - Desktop: Horizontal bar with logo (left), text (center), CTA button (right)
-    - Mobile: Shows logo centered with hamburger toggle
-    - Mobile panel: Expands to show text + CTA button (no logo repeated)
-
-  Follows theme patterns:
-    - Uses t: translation keys for all schema labels
-    - Uses padding-block-start / padding-block-end with spacing-padding snippet
-    - Uses color_scheme setting with color-{{ scheme }} class
-    - Uses section_width with page-width / full-width values
-    - No jQuery, vanilla JavaScript only
-  ============================================================================
 {% endcomment %}
 
 {{ 'custom-sections.css' | asset_url | stylesheet_tag }}
@@ -49,8 +37,8 @@
   {%- comment -%} ===== DESKTOP BAR ===== {%- endcomment -%}
   <div class="cb__bar">
 
-    {%- comment -%} Left: Logo (image or text) {%- endcomment -%}
-    <div class="cb__logo">
+    {%- comment -%} Left: Logo (image or text) — links to home page {%- endcomment -%}
+    <a class="cb__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
       {%- if section.settings.logo_image != blank -%}
         <img
           class="cb__logo-img"
@@ -63,7 +51,7 @@
       {%- else -%}
         <span class="cb__logo-text">{{ section.settings.logo_text | default: shop.name }}</span>
       {%- endif -%}
-    </div>
+    </a>
 
     {%- comment -%} Center: Promotional text (hidden on mobile) {%- endcomment -%}
     {%- if section.settings.promo_text != blank -%}
