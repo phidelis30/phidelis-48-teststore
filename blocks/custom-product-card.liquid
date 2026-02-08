@@ -5,15 +5,47 @@
   Renders a product image with a centered hotspot button.
   Designed for use inside the Custom Product Grid section,
   but can also be added to any section that accepts @theme blocks.
+
+  Card-level settings: color scheme, border, border-radius, padding.
 {% endcomment %}
 
 {%- assign product = block.settings.product -%}
 
 {%- if product != blank -%}
+  {%- liquid
+    assign inherit_scheme = block.settings.inherit_color_scheme
+    assign card_scheme = block.settings.color_scheme
+    assign border_style = block.settings.border | default: 'none'
+    assign border_width = block.settings.border_width | default: 1
+    assign border_opacity = block.settings.border_opacity | default: 100
+    assign border_radius = block.settings.border_radius | default: 0
+    assign pad_top = block.settings.padding-block-start | default: 0
+    assign pad_bottom = block.settings.padding-block-end | default: 0
+    assign pad_left = block.settings.padding-inline-start | default: 0
+    assign pad_right = block.settings.padding-inline-end | default: 0
+  -%}
+
+  {%- capture card_styles -%}
+    {%- if border_style != 'none' -%}
+      border-style: {{ border_style }};
+      border-width: {{ border_width }}px;
+      border-color: rgba(var(--color-foreground-rgb), {{ border_opacity | divided_by: 100.0 }});
+    {%- endif -%}
+    {%- if border_radius > 0 -%}
+      border-radius: {{ border_radius }}px;
+      overflow: hidden;
+    {%- endif -%}
+    {%- if pad_top > 0 -%}padding-block-start: {{ pad_top }}px;{%- endif -%}
+    {%- if pad_bottom > 0 -%}padding-block-end: {{ pad_bottom }}px;{%- endif -%}
+    {%- if pad_left > 0 -%}padding-inline-start: {{ pad_left }}px;{%- endif -%}
+    {%- if pad_right > 0 -%}padding-inline-end: {{ pad_right }}px;{%- endif -%}
+  {%- endcapture -%}
+
   <div
-    class="custom-product-grid__card"
+    class="custom-product-grid__card{% unless inherit_scheme %} color-{{ card_scheme }}{% endunless %}"
     data-product-handle="{{ product.handle }}"
     data-block-id="{{ block.id }}"
+    {% if card_styles != blank %}style="{{ card_styles | strip_newlines | strip }}"{% endif %}
     {{ block.shopify_attributes }}
   >
     {%- comment -%} Product image with hotspot button {%- endcomment -%}
@@ -59,6 +91,114 @@
       "type": "product",
       "id": "product",
       "label": "t:names.product"
+    },
+    {
+      "type": "checkbox",
+      "id": "inherit_color_scheme",
+      "label": "t:settings.inherit_color_scheme",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.inherit_color_scheme == false }}"
+    },
+    {
+      "type": "header",
+      "content": "t:content.borders"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "none",
+          "label": "t:options.none"
+        },
+        {
+          "value": "solid",
+          "label": "t:options.solid"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.thickness",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "t:settings.opacity",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
     }
   ],
   "presets": [
