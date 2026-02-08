@@ -1,0 +1,349 @@
+{% comment %}
+  ============================================================================
+  Section: Custom Banner (Announcement Bar)
+  ============================================================================
+  A slim promotional banner bar matching the Figma design:
+    - Desktop: Horizontal bar with logo (left), text (center), CTA button (right)
+    - Mobile: Shows logo centered with hamburger toggle
+    - Mobile panel: Expands to show full text + CTA button when toggled
+
+  Customizer Settings:
+    - Background color & color scheme
+    - Padding top / bottom
+    - Section width (full-width, normal, narrow)
+    - Logo: image upload OR text fallback
+    - Promotional text
+    - Button text, link, background color, text color
+    - Button animation on hover
+
+  Requirements:
+    - No jQuery, vanilla JavaScript only
+    - Well-structured, commented, and efficient code
+    - Built from scratch (no Dawn ready-made sections)
+  ============================================================================
+{% endcomment %}
+
+{{ 'custom-sections.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign padding_top = section.settings.padding_top | default: 12
+  assign padding_bottom = section.settings.padding_bottom | default: 12
+  assign section_width = section.settings.section_width | default: 'full'
+  assign bg_color = section.settings.bg_color | default: '#ffffff'
+  assign text_color = section.settings.text_color | default: '#000000'
+  assign btn_bg = section.settings.button_bg_color | default: '#E8D44D'
+  assign btn_text = section.settings.button_text_color | default: '#000000'
+  assign btn_hover_bg = section.settings.button_hover_bg_color | default: '#d4c043'
+  assign btn_hover_text = section.settings.button_hover_text_color | default: '#000000'
+  assign btn_border_color = section.settings.button_border_color | default: '#E8D44D'
+-%}
+
+{%- comment -%} Scoped styles: dynamic customizer values applied per section instance {%- endcomment -%}
+<style>
+  #CustomBanner-{{ section.id }} {
+    --cb-bg: {{ bg_color }};
+    --cb-text: {{ text_color }};
+    --cb-btn-bg: {{ btn_bg }};
+    --cb-btn-text: {{ btn_text }};
+    --cb-btn-hover-bg: {{ btn_hover_bg }};
+    --cb-btn-hover-text: {{ btn_hover_text }};
+    --cb-btn-border: {{ btn_border_color }};
+    --cb-padding-top: {{ padding_top }}px;
+    --cb-padding-bottom: {{ padding_bottom }}px;
+  }
+</style>
+
+<section
+  id="CustomBanner-{{ section.id }}"
+  class="cb {% if section_width == 'full' %}cb--full{% elsif section_width == 'narrow' %}cb--narrow{% else %}cb--normal{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="custom-banner"
+  role="banner"
+>
+  {%- comment -%} ===== DESKTOP BAR ===== {%- endcomment -%}
+  <div class="cb__bar">
+
+    {%- comment -%} Left: Logo (image or text) {%- endcomment -%}
+    <div class="cb__logo">
+      {%- if section.settings.logo_image != blank -%}
+        <img
+          class="cb__logo-img"
+          src="{{ section.settings.logo_image | image_url: width: 200 }}"
+          alt="{{ section.settings.logo_text | default: shop.name | escape }}"
+          width="auto"
+          height="{{ section.settings.logo_height | default: 20 }}"
+          loading="eager"
+        >
+      {%- else -%}
+        <span class="cb__logo-text">{{ section.settings.logo_text | default: shop.name }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Center: Promotional text (hidden on mobile) {%- endcomment -%}
+    {%- if section.settings.promo_text != blank -%}
+      <p class="cb__promo-text">{{ section.settings.promo_text }}</p>
+    {%- endif -%}
+
+    {%- comment -%} Right: CTA button with arrow (hidden on mobile) {%- endcomment -%}
+    {%- if section.settings.button_text != blank -%}
+      <a
+        href="{{ section.settings.button_link }}"
+        class="cb__btn"
+        aria-label="{{ section.settings.button_text | escape }}"
+      >
+        <span class="cb__btn-text">{{ section.settings.button_text }}</span>
+        <span class="cb__btn-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    {%- endif -%}
+
+    {%- comment -%} Mobile toggle button: hamburger / close {%- endcomment -%}
+    <button
+      class="cb__toggle"
+      type="button"
+      aria-label="Toggle banner panel"
+      aria-expanded="false"
+      data-cb-toggle="{{ section.id }}"
+    >
+      {%- comment -%} Hamburger icon (3 lines) {%- endcomment -%}
+      <svg class="cb__toggle-open" width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <line y1="1" x2="20" y2="1" stroke="currentColor" stroke-width="2"/>
+        <line y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="2"/>
+        <line y1="13" x2="20" y2="13" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      {%- comment -%} Close icon (X) {%- endcomment -%}
+      <svg class="cb__toggle-close" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <line x1="1.41" y1="1" x2="15" y2="14.59" stroke="currentColor" stroke-width="2"/>
+        <line x1="1" y1="14.59" x2="14.59" y2="1" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </button>
+  </div>
+
+  {%- comment -%} ===== MOBILE PANEL (slide down) ===== {%- endcomment -%}
+  <div
+    class="cb__panel"
+    id="CustomBannerPanel-{{ section.id }}"
+    aria-hidden="true"
+  >
+    {%- comment -%} Logo repeated in panel for centered display {%- endcomment -%}
+    <div class="cb__panel-logo">
+      {%- if section.settings.logo_image != blank -%}
+        <img
+          class="cb__logo-img"
+          src="{{ section.settings.logo_image | image_url: width: 200 }}"
+          alt="{{ section.settings.logo_text | default: shop.name | escape }}"
+          width="auto"
+          height="{{ section.settings.logo_height | default: 24 }}"
+          loading="lazy"
+        >
+      {%- else -%}
+        <span class="cb__panel-logo-text">{{ section.settings.logo_text | default: shop.name }}</span>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Promo text in panel {%- endcomment -%}
+    {%- if section.settings.promo_text != blank -%}
+      <p class="cb__panel-promo">{{ section.settings.promo_text }}</p>
+    {%- endif -%}
+
+    {%- comment -%} CTA button in panel {%- endcomment -%}
+    {%- if section.settings.button_text != blank -%}
+      <a
+        href="{{ section.settings.button_link }}"
+        class="cb__panel-btn"
+        aria-label="{{ section.settings.button_text | escape }}"
+      >
+        <span class="cb__btn-text">{{ section.settings.button_text }}</span>
+        <span class="cb__btn-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    {%- endif -%}
+  </div>
+</section>
+
+{%- comment -%}
+  ============================================================================
+  Vanilla JavaScript — Mobile Panel Toggle
+  ============================================================================
+  Handles the hamburger/close toggle on mobile to expand/collapse the panel.
+  No jQuery. Uses data attributes scoped to section ID for multi-instance support.
+  ============================================================================
+{%- endcomment -%}
+<script>
+  (function() {
+    'use strict';
+
+    var sectionId = '{{ section.id }}';
+    var toggleBtn = document.querySelector('[data-cb-toggle="' + sectionId + '"]');
+    var panel = document.getElementById('CustomBannerPanel-' + sectionId);
+    var section = document.getElementById('CustomBanner-' + sectionId);
+
+    if (!toggleBtn || !panel) return;
+
+    /**
+     * Toggle the mobile panel open/closed.
+     * Updates aria attributes and CSS class for animation.
+     */
+    toggleBtn.addEventListener('click', function() {
+      var isOpen = section.classList.contains('cb--panel-open');
+
+      if (isOpen) {
+        /* Close the panel */
+        section.classList.remove('cb--panel-open');
+        panel.setAttribute('aria-hidden', 'true');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+      } else {
+        /* Open the panel */
+        section.classList.add('cb--panel-open');
+        panel.setAttribute('aria-hidden', 'false');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Banner",
+  "tag": "section",
+  "class": "custom-banner-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Section Width",
+      "options": [
+        { "value": "full", "label": "Full Width" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "narrow", "label": "Narrow" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "default": 12,
+      "label": "Padding Top",
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "default": 12,
+      "label": "Padding Bottom",
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo Image",
+      "info": "Upload a logo image. If empty, logo text will be used instead."
+    },
+    {
+      "type": "text",
+      "id": "logo_text",
+      "label": "Logo Text",
+      "default": "TISSO VISON",
+      "info": "Displayed when no logo image is uploaded."
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "default": 20,
+      "label": "Logo Height",
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Promotional Text"
+    },
+    {
+      "type": "text",
+      "id": "promo_text",
+      "label": "Promotional Text",
+      "default": "Find the ideal gift for your loved ones."
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button Text",
+      "default": "CHOOSE GIFT"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button Link"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button Background",
+      "default": "#E8D44D"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_bg_color",
+      "label": "Button Hover Background",
+      "default": "#d4c043"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Button Hover Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button Border Color",
+      "default": "#E8D44D"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Banner"
+    }
+  ]
+}
+{% endschema %}
