@@ -31,6 +31,7 @@
       "block_order": [
         "announcement_BxgCk9"
       ],
+      "disabled": true,
       "name": "t:names.announcement_bar",
       "settings": {
         "speed": 5,
@@ -79,6 +80,7 @@
           "blocks": {}
         }
       },
+      "disabled": true,
       "settings": {
         "logo_position": "left",
         "menu_position": "left",
@@ -109,10 +111,32 @@
         "enable_transparent_header_collection": false,
         "collection_color_scheme": "default"
       }
+    },
+    "custom_banner_GxyEMP": {
+      "type": "custom-banner",
+      "name": "Custom Banner",
+      "settings": {
+        "section_width": "full",
+        "padding_top": 12,
+        "padding_bottom": 12,
+        "bg_color": "#ffffff",
+        "text_color": "#000000",
+        "logo_text": "TISSO VISON",
+        "logo_height": 20,
+        "promo_text": "Find the ideal gift for your loved ones.",
+        "button_text": "CHOOSE GIFT",
+        "button_link": "",
+        "button_bg_color": "#E8D44D",
+        "button_text_color": "#000000",
+        "button_hover_bg_color": "#d4c043",
+        "button_hover_text_color": "#000000",
+        "button_border_color": "#E8D44D"
+      }
     }
   },
   "order": [
     "header_announcements_9jGBFp",
-    "header_section"
+    "header_section",
+    "custom_banner_GxyEMP"
   ]
 }
