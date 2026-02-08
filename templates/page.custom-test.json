@@ -52,13 +52,75 @@
       "name": "Custom Hero",
       "settings": {
         "section_width": "full-width",
-        "color_scheme": "",
+        "color_scheme": "scheme-1",
         "min_height": 500,
         "min_height_mobile": 400,
         "content_width": 50,
         "padding-block-start": 0,
         "padding-block-end": 0,
         "overlay_opacity": 0
+      }
+    },
+    "section_CYUYJH": {
+      "type": "section",
+      "blocks": {
+        "text_PWrCJW": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h6",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "var(--color-foreground)",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_PWrCJW"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "center",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 0,
+        "section_width": "full-width",
+        "section_height": "custom",
+        "section_height_custom": 6,
+        "color_scheme": "scheme-2",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     },
     "custom-product-grid": {
@@ -116,6 +178,7 @@
   },
   "order": [
     "custom_hero_aHKVKn",
+    "section_CYUYJH",
     "custom-product-grid"
   ]
 }
