@@ -17,11 +17,6 @@
     --cpg-heading-size: {{ heading_size }}px;
     --cpg-heading-align: {{ heading_alignment }};
   }
-
-  /* Hide cards beyond the products_to_show limit */
-  #ProductGrid-{{ section.id }} .custom-product-grid__grid > :nth-child(n + {{ products_to_show | plus: 1 }}) {
-    display: none;
-  }
 </style>
 
 <section
@@ -38,12 +33,50 @@
   {%- endif -%}
 
   {%- comment -%}
-    Product cards grid — rendered via content_for 'blocks' so theme-level
-    blocks (blocks/custom-product-card.liquid) render correctly.
-    The products_to_show limit is handled via scoped CSS :nth-child rule above.
+    Product cards grid — manual loop with limit so the popup JS
+    can access product data and bind click handlers correctly.
   {%- endcomment -%}
   <div class="custom-product-grid__grid">
-    {%- content_for 'blocks' -%}
+    {%- for block in section.blocks limit: products_to_show -%}
+      {%- assign product = block.settings.product -%}
+      {%- if product != blank -%}
+        <div
+          class="custom-product-grid__card"
+          data-product-handle="{{ product.handle }}"
+          data-block-id="{{ block.id }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="custom-product-grid__image-wrapper">
+            {%- if product.featured_image != blank -%}
+              <img
+                class="custom-product-grid__image"
+                src="{{ product.featured_image | image_url: width: 600 }}"
+                alt="{{ product.featured_image.alt | escape }}"
+                width="600"
+                height="600"
+                loading="lazy"
+              >
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'custom-product-grid__image' }}
+            {%- endif -%}
+
+            <button
+              class="custom-product-grid__hotspot"
+              type="button"
+              aria-label="View {{ product.title | escape }} details"
+              data-popup-trigger="{{ product.handle }}"
+            >
+              <span class="custom-product-grid__hotspot-icon">+</span>
+            </button>
+          </div>
+
+          <div class="custom-product-grid__info">
+            <h3 class="custom-product-grid__title">{{ product.title }}</h3>
+            <p class="custom-product-grid__price">{{ product.price | money }}</p>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
   </div>
 
   {%- comment -%}
@@ -500,26 +533,27 @@
     }
 
     /* ------------------------------------------------------------------
-       EVENT LISTENERS
+       EVENT LISTENERS — uses event delegation on the section container
+       so clicks work even if cards are rendered dynamically.
        ------------------------------------------------------------------ */
+    var sectionEl = document.getElementById('ProductGrid-' + sectionId);
 
-    /* Hotspot click: open popup for the associated product */
-    var hotspots = document.querySelectorAll('#ProductGrid-' + sectionId + ' [data-popup-trigger]');
-    hotspots.forEach(function(hotspot) {
-      hotspot.addEventListener('click', function(e) {
+    /* Delegated click: hotspot or card opens popup */
+    sectionEl.addEventListener('click', function(e) {
+      /* Check for hotspot click first (more specific) */
+      var hotspot = e.target.closest('[data-popup-trigger]');
+      if (hotspot) {
         e.stopPropagation();
-        var handle = this.getAttribute('data-popup-trigger');
-        openPopup(handle);
-      });
-    });
+        openPopup(hotspot.getAttribute('data-popup-trigger'));
+        return;
+      }
 
-    /* Card click: also open popup (entire card is clickable) */
-    var cards = document.querySelectorAll('#ProductGrid-' + sectionId + ' .custom-product-grid__card');
-    cards.forEach(function(card) {
-      card.addEventListener('click', function() {
-        var handle = this.getAttribute('data-product-handle');
-        openPopup(handle);
-      });
+      /* Check for card click (entire card is clickable) */
+      var card = e.target.closest('.custom-product-grid__card');
+      if (card) {
+        openPopup(card.getAttribute('data-product-handle'));
+        return;
+      }
     });
 
     /* Close popup: click close button */
