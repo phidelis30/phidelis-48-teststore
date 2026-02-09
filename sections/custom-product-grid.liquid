@@ -12,6 +12,7 @@
   assign show_description = section.settings.show_card_description
   assign card_click_action = section.settings.card_click_action | default: 'popup'
   assign button_text = section.settings.button_text | default: 'ADD TO CART'
+  assign grid_parent_id = 'ProductGrid-' | append: section.id
 -%}
 
 {%- comment -%} Scoped styles for dynamic customizer values {%- endcomment -%}
@@ -61,7 +62,7 @@
   {%- endcomment -%}
   {% render 'custom-product-popup',
     section_id: section.id,
-    parent_id: 'ProductGrid-' | append: section.id,
+    parent_id: grid_parent_id,
     card_click_action: card_click_action,
     button_text: button_text
   %}
