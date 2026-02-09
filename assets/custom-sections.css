@@ -833,11 +833,11 @@
   gap: 8px;
 }
 
-/* Color options: 2-column grid layout */
+/* Color options: 2-column grid, no gap — items share borders */
 .custom-popup__variant-options--color {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  gap: 0;
 }
 
 /* Individual variant option button (generic) */
@@ -872,33 +872,39 @@
 }
 
 /* --------------------------------------------------------------------------
-   Color variant — div wrapper with color swatch (10%) + button (90%)
+   Color variant — div wrapper with color swatch + button
+   Items sit side by side with shared borders (table-cell look).
    -------------------------------------------------------------------------- */
 
-/* Wrapper div: flex row, border around the whole item */
+/* Wrapper div: flex row, 1px border — shared with adjacent items */
 .custom-popup__color-item {
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  border: 1px solid var(--custom-color-border);
+  border: 1px solid var(--custom-color-black);
   border-radius: 0;
   overflow: hidden;
   cursor: pointer;
   transition: border-color var(--custom-transition-speed) ease;
 }
 
+/* Collapse left border on the second item to avoid double border */
+.custom-popup__color-item:nth-child(2) {
+  border-left: none;
+}
+
 .custom-popup__color-item:hover {
   border-color: var(--custom-color-black);
 }
 
-/* Color swatch span: 10% width, shows the actual color */
+/* Color swatch span: narrow strip showing the actual color */
 .custom-popup__color-swatch {
-  flex: 0 0 10%;
-  width: 10%;
+  flex: 0 0 6%;
+  width: 6%;
   border-right: 1px solid var(--custom-color-black);
 }
 
-/* Button: 90% width, shows color name text */
+/* Button: remaining width, shows color name text */
 .custom-popup__color-btn {
   flex: 1;
   padding: 14px 16px;
@@ -917,11 +923,7 @@
   color: var(--custom-color-black);
 }
 
-/* Selected state: button bg black, text white */
-.custom-popup__color-item.custom-popup__variant-option--selected {
-  border-color: var(--custom-color-black);
-}
-
+/* Selected state: button bg black, text white — swatch keeps showing color */
 .custom-popup__color-item.custom-popup__variant-option--selected .custom-popup__color-btn {
   background: var(--custom-color-black);
   color: var(--custom-color-white);
