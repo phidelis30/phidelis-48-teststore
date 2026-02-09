@@ -281,7 +281,16 @@
         return;
       }
 
-      product.options.forEach(function(option) {
+      /* Sort options so Color/Colour always appears before Size */
+      var sortedOptions = product.options.slice().sort(function(a, b) {
+        var aName = a.name.toLowerCase();
+        var bName = b.name.toLowerCase();
+        if (aName === 'color' || aName === 'colour') return -1;
+        if (bName === 'color' || bName === 'colour') return 1;
+        return 0;
+      });
+
+      sortedOptions.forEach(function(option) {
         /* Create option group container */
         var group = document.createElement('div');
         group.className = 'custom-popup__variant-group';
@@ -334,9 +343,17 @@
             var btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'custom-popup__variant-option custom-popup__color-btn';
-            btn.textContent = value;
             btn.setAttribute('data-option-name', option.name);
             btn.setAttribute('data-option-value', value);
+
+            /* Add colored left border accent using the color map */
+            var hex = getColorHex(value);
+            btn.style.borderLeftWidth = '4px';
+            btn.style.borderLeftStyle = 'solid';
+            btn.style.borderLeftColor = hex;
+
+            /* Button text */
+            btn.textContent = value;
 
             btn.addEventListener('click', function() {
               selectOption(option.name, value, optionsContainer);
