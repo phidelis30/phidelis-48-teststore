@@ -62,18 +62,20 @@
       {%- comment -%} Close button {%- endcomment -%}
       <button class="custom-popup__close" type="button" aria-label="Close popup">&times;</button>
 
-      {%- comment -%} Product image (left side) {%- endcomment -%}
-      <div class="custom-popup__image-wrapper">
-        <img class="custom-popup__image" src="" alt="" loading="lazy">
+      {%- comment -%} Top row: product image (left) + basic info (right) {%- endcomment -%}
+      <div class="custom-popup__top">
+        <div class="custom-popup__image-wrapper">
+          <img class="custom-popup__image" src="" alt="" loading="lazy">
+        </div>
+        <div class="custom-popup__info">
+          <h2 class="custom-popup__name"></h2>
+          <p class="custom-popup__price"></p>
+          <p class="custom-popup__description"></p>
+        </div>
       </div>
 
-      {%- comment -%} Product details (right side) {%- endcomment -%}
-      <div class="custom-popup__details">
-        <h2 class="custom-popup__name"></h2>
-        <p class="custom-popup__price"></p>
-        <p class="custom-popup__description"></p>
-
-        {%- comment -%} Variant options container — built dynamically by JS {%- endcomment -%}
+      {%- comment -%} Bottom: variants + ATC — full width below the image row {%- endcomment -%}
+      <div class="custom-popup__bottom">
         <div class="custom-popup__variants"></div>
 
         {%- comment -%} Success message after add to cart {%- endcomment -%}

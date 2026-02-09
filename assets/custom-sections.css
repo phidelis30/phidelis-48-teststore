@@ -659,16 +659,16 @@
   visibility: visible;
 }
 
-/* Popup container: white card centered in overlay */
+/* Popup container: vertical layout — top row + bottom section */
 .custom-popup {
   background: var(--custom-color-white);
   border-radius: 0;
-  max-width: 860px;
+  max-width: 480px;
   width: 90%;
   max-height: 90vh;
-  overflow: hidden;
+  overflow-y: auto;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
   transform: scale(0.95);
   transition: transform var(--custom-transition-speed) ease;
@@ -706,56 +706,72 @@
   opacity: 0.6;
 }
 
-/* Left side: product image in popup */
+/* Top row: image (left) + info (right) side by side */
+.custom-popup__top {
+  display: flex;
+  flex-direction: row;
+  padding: 24px 24px 16px;
+  gap: 20px;
+}
+
+/* Product image in top row */
 .custom-popup__image-wrapper {
-  flex: 0 0 45%;
-  max-width: 45%;
+  flex: 0 0 40%;
+  max-width: 40%;
 }
 
 .custom-popup__image {
   width: 100%;
-  height: 100%;
+  height: auto;
   object-fit: cover;
+  display: block;
 }
 
-/* Right side: product details in popup */
-.custom-popup__details {
+/* Product info beside the image */
+.custom-popup__info {
   flex: 1;
-  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  overflow-y: auto;
+  gap: 8px;
+  padding-top: 4px;
 }
 
-/* Product name inside popup */
+/* Product name */
 .custom-popup__name {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   margin: 0;
   color: var(--custom-color-black);
   line-height: 1.3;
 }
 
-/* Product price inside popup */
+/* Product price */
 .custom-popup__price {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--custom-color-black);
   margin: 0;
 }
 
-/* Product description inside popup */
+/* Product description */
 .custom-popup__description {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--custom-color-gray);
-  margin: 0 0 4px 0;
+  margin: 0;
+}
+
+/* Bottom section: variants + ATC — full width */
+.custom-popup__bottom {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 /* Variant option group in popup */
 .custom-popup__variant-group {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .custom-popup__variant-label {
@@ -903,7 +919,7 @@
   white-space: nowrap;
   cursor: pointer;
   transition: all var(--custom-transition-speed) ease;
-  margin-top: auto;
+  margin-top: 8px;
   text-decoration: none;
 }
 
@@ -1032,33 +1048,32 @@
     margin-bottom: 16px;
   }
 
-  /* Popup: stacks vertically on mobile */
+  /* Popup on mobile */
   .custom-popup {
-    flex-direction: column;
     width: 95%;
     max-height: 85vh;
   }
 
-  .custom-popup__image-wrapper {
-    flex: none;
-    max-width: 100%;
-    height: 250px;
+  .custom-popup__top {
+    padding: 16px 16px 12px;
+    gap: 14px;
   }
 
-  .custom-popup__image {
-    border-radius: 0;
-  }
-
-  .custom-popup__details {
-    padding: 20px;
+  .custom-popup__bottom {
+    padding: 0 16px 20px;
+    gap: 12px;
   }
 
   .custom-popup__name {
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .custom-popup__price {
-    font-size: 16px;
+    font-size: 14px;
+  }
+
+  .custom-popup__description {
+    font-size: 11px;
   }
 }
 
