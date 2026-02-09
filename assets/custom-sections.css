@@ -931,13 +931,14 @@
 
 /* --------------------------------------------------------------------------
    Size select dropdown with vertical separator + chevron compartment
+   Border is black, text centered, separator spans full height.
    -------------------------------------------------------------------------- */
 .custom-popup__select-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* Vertical separator bar — creates a distinct right compartment for the chevron */
+/* Vertical separator bar — full height, black, divides text from chevron */
 .custom-popup__select-wrapper::before {
   content: '';
   position: absolute;
@@ -945,7 +946,7 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background: var(--custom-color-border);
+  background: var(--custom-color-black);
   pointer-events: none;
   z-index: 1;
 }
@@ -954,11 +955,11 @@
 .custom-popup__select-wrapper::after {
   content: '';
   position: absolute;
-  right: 18px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  width: 10px;
-  height: 10px;
+  width: 14px;
+  height: 14px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: contain;
@@ -969,7 +970,7 @@
 .custom-popup__variant-select {
   width: 100%;
   padding: 14px 56px 14px 16px;
-  border: 1px solid var(--custom-color-border);
+  border: 1px solid var(--custom-color-black);
   border-radius: 0;
   background: var(--custom-color-white);
   background-image: none;
@@ -983,6 +984,8 @@
   -moz-appearance: none;
   outline: none;
   box-shadow: none;
+  text-align: center;
+  text-align-last: center;
   transition: border-color var(--custom-transition-speed) ease;
 }
 
@@ -1002,9 +1005,9 @@
   border-color: var(--custom-color-black);
 }
 
-/* On focus, also darken the separator */
-.custom-popup__select-wrapper:focus-within::before {
-  background: var(--custom-color-black);
+/* Style native dropdown options — centered text */
+.custom-popup__variant-select option {
+  text-align: center;
 }
 
 /* Add to Cart button — hero style, text left + long arrow right */
