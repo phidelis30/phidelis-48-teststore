@@ -539,10 +539,8 @@
    4. PRODUCT GRID SECTION
    ========================================================================== */
 
-/* Grid section wrapper with centered max-width */
+/* Grid section wrapper — relies on theme .section--page-width / .section--full-width for width */
 .custom-product-grid {
-  max-width: var(--custom-section-max-width);
-  margin: 0 auto;
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
@@ -553,7 +551,7 @@
   font-weight: 400;
   text-align: var(--cpg-heading-align, left);
   margin-bottom: 24px;
-  color: var(--custom-color-gray);
+  color: var(--color-foreground);
 }
 
 /* Dynamic column grid layout for product cards */
@@ -576,7 +574,7 @@
   width: 100%;
   aspect-ratio: 1 / 1;
   overflow: hidden;
-  background: var(--custom-color-light-gray);
+  background: rgba(var(--color-foreground-rgb), 0.04);
 }
 
 /* Product image: fills container, covers area */
