@@ -817,6 +817,7 @@
 
 /* --------------------------------------------------------------------------
    Color swatch buttons — large rectangular with color block on the left
+   Matches the design: [color-square] Color Name — full-width stacked
    -------------------------------------------------------------------------- */
 .custom-popup__color-btn {
   display: flex;
@@ -829,13 +830,19 @@
   background: var(--custom-color-white);
   cursor: pointer;
   transition: all var(--custom-transition-speed) ease;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 0;
+  white-space: normal;
 }
 
 .custom-popup__color-btn:hover {
   border-color: var(--custom-color-black);
 }
 
-/* Selected color button: thick dark border */
+/* Selected color button: thick dark border, white bg stays */
 .custom-popup__color-btn.custom-popup__variant-option--selected {
   border-color: var(--custom-color-black);
   border-width: 2px;
@@ -852,7 +859,7 @@
   flex-shrink: 0;
 }
 
-/* Color name text */
+/* Color name text next to the swatch */
 .custom-popup__color-name {
   font-size: 14px;
   font-weight: 500;
