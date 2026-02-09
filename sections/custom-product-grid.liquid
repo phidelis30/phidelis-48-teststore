@@ -344,30 +344,38 @@
           selectWrapper.appendChild(select);
           group.appendChild(selectWrapper);
 
-        /* Color option: render as rectangular text buttons in 2-column grid */
+        /* Color option: div wrapper with color swatch span (10%) + button (90%) */
         } else if (optionNameLower === 'color' || optionNameLower === 'colour') {
           var optionsContainer = document.createElement('div');
           optionsContainer.className = 'custom-popup__variant-options custom-popup__variant-options--color';
 
           option.values.forEach(function(value) {
+            /* Wrapper div — acts as the clickable row */
+            var wrapper = document.createElement('div');
+            wrapper.className = 'custom-popup__color-item';
+            wrapper.setAttribute('data-option-name', option.name);
+            wrapper.setAttribute('data-option-value', value);
+
+            /* Color swatch span — 10% width, shows actual color */
+            var swatch = document.createElement('span');
+            swatch.className = 'custom-popup__color-swatch';
+            var hex = getColorHex(value);
+            swatch.style.backgroundColor = hex;
+
+            /* Button — 90% width, shows color name text */
             var btn = document.createElement('button');
             btn.type = 'button';
-            btn.className = 'custom-popup__variant-option custom-popup__color-btn';
-            btn.setAttribute('data-option-name', option.name);
-            btn.setAttribute('data-option-value', value);
-
-            /* Set the left border color accent using the color map */
-            var hex = getColorHex(value);
-            btn.style.borderLeftColor = hex;
-
-            /* Button text */
+            btn.className = 'custom-popup__color-btn';
             btn.textContent = value;
 
-            btn.addEventListener('click', function() {
+            wrapper.appendChild(swatch);
+            wrapper.appendChild(btn);
+
+            wrapper.addEventListener('click', function() {
               selectOption(option.name, value, optionsContainer);
             });
 
-            optionsContainer.appendChild(btn);
+            optionsContainer.appendChild(wrapper);
           });
 
           group.appendChild(optionsContainer);
@@ -408,13 +416,13 @@
       /* Update selection state */
       selectedOptions[optionName] = optionValue;
 
-      /* Update visual selection: toggle selected class on buttons */
-      var buttons = container.querySelectorAll('.custom-popup__variant-option');
-      for (var i = 0; i < buttons.length; i++) {
-        if (buttons[i].getAttribute('data-option-value') === optionValue) {
-          buttons[i].classList.add('custom-popup__variant-option--selected');
+      /* Update visual selection: toggle selected class on buttons or color item wrappers */
+      var selectables = container.querySelectorAll('.custom-popup__variant-option, .custom-popup__color-item');
+      for (var i = 0; i < selectables.length; i++) {
+        if (selectables[i].getAttribute('data-option-value') === optionValue) {
+          selectables[i].classList.add('custom-popup__variant-option--selected');
         } else {
-          buttons[i].classList.remove('custom-popup__variant-option--selected');
+          selectables[i].classList.remove('custom-popup__variant-option--selected');
         }
       }
 
