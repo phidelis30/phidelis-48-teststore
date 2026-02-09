@@ -28,6 +28,16 @@
   #ProductGrid-{{ section.id }} .custom-product-grid__grid > .custom-product-grid__card:nth-child(n + {{ products_to_show | plus: 1 }}) {
     display: none;
   }
+
+  /* Mobile padding overrides */
+  @media screen and (max-width: 749px) {
+    #ProductGrid-{{ section.id }} {
+      --padding-block-start: {{ section.settings.mobile-padding-block-start | default: section.settings.padding-block-start | default: 60 }}px;
+      --padding-block-end: {{ section.settings.mobile-padding-block-end | default: section.settings.padding-block-end | default: 60 }}px;
+      --padding-inline-start: {{ section.settings.mobile-padding-inline-start | default: section.settings.padding-inline-start | default: 0 }}px;
+      --padding-inline-end: {{ section.settings.mobile-padding-inline-end | default: section.settings.padding-inline-end | default: 0 }}px;
+    }
+  }
 </style>
 
 {%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
@@ -271,6 +281,50 @@
     {
       "type": "range",
       "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Mobile padding"
+    },
+    {
+      "type": "range",
+      "id": "mobile-padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile-padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile-padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "mobile-padding-inline-end",
       "label": "t:settings.right",
       "min": 0,
       "max": 100,
