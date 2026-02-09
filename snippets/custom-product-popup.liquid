@@ -1,0 +1,517 @@
+{%- comment -%}
+  ============================================================================
+  Snippet: Custom Product Popup
+  ============================================================================
+  Reusable popup overlay + vanilla JS for product card blocks.
+  Can be rendered by any section that contains custom-product-card blocks.
+
+  Accepts:
+    section_id:        The section ID (required)
+    parent_id:         The parent element ID that contains the product cards (required)
+    card_click_action: 'popup' | 'product_page' | 'add_to_cart' (default: 'popup')
+    button_text:       Text for the ATC button (default: 'ADD TO CART')
+  ============================================================================
+{%- endcomment -%}
+
+{%- assign _popup_section_id = section_id -%}
+{%- assign _popup_parent_id = parent_id -%}
+{%- assign _popup_click_action = card_click_action | default: 'popup' -%}
+{%- assign _popup_button_text = button_text | default: 'ADD TO CART' -%}
+
+{%- comment -%} Popup Overlay HTML {%- endcomment -%}
+<div
+  id="CustomPopupOverlay-{{ _popup_section_id }}"
+  class="custom-popup-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Product details"
+>
+  <div class="custom-popup">
+    {%- comment -%} Close button {%- endcomment -%}
+    <button class="custom-popup__close" type="button" aria-label="Close popup">&times;</button>
+
+    {%- comment -%} Top row: product image (left) + basic info (right) {%- endcomment -%}
+    <div class="custom-popup__top">
+      <div class="custom-popup__image-wrapper">
+        <img class="custom-popup__image" src="" alt="" loading="lazy">
+      </div>
+      <div class="custom-popup__info">
+        <h2 class="custom-popup__name"></h2>
+        <p class="custom-popup__price"></p>
+        <p class="custom-popup__description"></p>
+      </div>
+    </div>
+
+    {%- comment -%} Bottom: variants + ATC — full width below the image row {%- endcomment -%}
+    <div class="custom-popup__bottom">
+      <div class="custom-popup__variants"></div>
+
+      {%- comment -%} Success message after add to cart {%- endcomment -%}
+      <div class="custom-popup__success-message">Added to cart successfully!</div>
+
+      {%- comment -%} Add to Cart button with arrow icon {%- endcomment -%}
+      <button
+        class="custom-popup__add-to-cart"
+        type="button"
+        disabled
+      >
+        <span class="custom-popup__atc-text">{{ _popup_button_text }}</span>
+        <span class="custom-popup__atc-arrow"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{%- comment -%} Soft Winter Jacket auto-add rule data {%- endcomment -%}
+{%- assign soft_winter_jacket = all_products['soft-winter-jacket'] -%}
+{%- if soft_winter_jacket != blank -%}
+  <script type="application/json" id="SoftWinterJacketData-{{ _popup_section_id }}">
+    {
+      "id": {{ soft_winter_jacket.id }},
+      "handle": "soft-winter-jacket",
+      "firstAvailableVariantId": {{ soft_winter_jacket.selected_or_first_available_variant.id }}
+    }
+  </script>
+{%- endif -%}
+
+{%- comment -%}
+  ============================================================================
+  Vanilla JavaScript — Product Popup & Add to Cart
+  ============================================================================
+  - No jQuery dependency
+  - Opens popup with product data on hotspot click
+  - Renders variant options dynamically (Color swatch + button, Size dropdown)
+  - Matches selected options to the correct variant ID
+  - Adds to cart via Shopify /cart/add.js API
+  - Auto-adds "Soft Winter Jacket" when variant with Black + Medium is carted
+  ============================================================================
+{%- endcomment -%}
+<script>
+  (function() {
+    'use strict';
+
+    /* ------------------------------------------------------------------
+       CONFIGURATION & DOM REFERENCES
+       ------------------------------------------------------------------ */
+    var sectionId = '{{ _popup_section_id }}';
+    var parentId = '{{ _popup_parent_id }}';
+    var sectionEl = document.getElementById(parentId);
+    if (!sectionEl) return;
+
+    var cardClickAction = sectionEl.getAttribute('data-card-click-action') || '{{ _popup_click_action }}';
+    var buttonText = sectionEl.getAttribute('data-button-text') || '{{ _popup_button_text | escape }}';
+    var overlay = document.getElementById('CustomPopupOverlay-' + sectionId);
+    if (!overlay) return;
+
+    var popup = overlay.querySelector('.custom-popup');
+    var closeBtn = overlay.querySelector('.custom-popup__close');
+    var popupImage = overlay.querySelector('.custom-popup__image');
+    var popupName = overlay.querySelector('.custom-popup__name');
+    var popupPrice = overlay.querySelector('.custom-popup__price');
+    var popupDesc = overlay.querySelector('.custom-popup__description');
+    var popupVariants = overlay.querySelector('.custom-popup__variants');
+    var addToCartBtn = overlay.querySelector('.custom-popup__add-to-cart');
+    var successMsg = overlay.querySelector('.custom-popup__success-message');
+
+    /* ------------------------------------------------------------------
+       LOAD PRODUCT DATA FROM EMBEDDED BLOCK SCRIPTS
+       Each block outputs its own <script class="cpg-product-data"> tag
+       with the product JSON inside the card element.
+       ------------------------------------------------------------------ */
+    var productData = {};
+    var dataScripts = sectionEl.querySelectorAll('.cpg-product-data');
+    dataScripts.forEach(function(script) {
+      try {
+        var data = JSON.parse(script.textContent);
+        if (data && data.handle) {
+          productData[data.handle] = data;
+        }
+      } catch (e) {
+        console.error('Custom Product Popup: Failed to parse product data', e);
+      }
+    });
+
+    /* Load Soft Winter Jacket data if available */
+    var softWinterJacketData = null;
+    var jacketDataEl = document.getElementById('SoftWinterJacketData-' + sectionId);
+    if (jacketDataEl) {
+      try {
+        softWinterJacketData = JSON.parse(jacketDataEl.textContent);
+      } catch (e) {
+        console.error('Custom Product Popup: Failed to parse jacket data', e);
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       STATE: tracks currently selected options for the open popup
+       ------------------------------------------------------------------ */
+    var currentProduct = null;
+    var selectedOptions = {};
+
+    /* ------------------------------------------------------------------
+       OPEN POPUP
+       ------------------------------------------------------------------ */
+    function openPopup(handle) {
+      var product = productData[handle];
+      if (!product) return;
+
+      currentProduct = product;
+      selectedOptions = {};
+
+      popupImage.src = product.image;
+      popupImage.alt = product.imageAlt;
+      popupName.textContent = product.title;
+      popupPrice.textContent = product.price;
+      popupDesc.textContent = product.description;
+
+      renderVariants(product);
+
+      addToCartBtn.disabled = true;
+      addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
+      addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">' + buttonText + '</span><span class="custom-popup__atc-arrow"></span>';
+      successMsg.classList.remove('custom-popup__success-message--visible');
+
+      overlay.classList.add('custom-popup-overlay--active');
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    /* ------------------------------------------------------------------
+       CLOSE POPUP
+       ------------------------------------------------------------------ */
+    function closePopup() {
+      overlay.classList.remove('custom-popup-overlay--active');
+      document.body.style.overflow = '';
+      currentProduct = null;
+      selectedOptions = {};
+    }
+
+    /* ------------------------------------------------------------------
+       COLOR MAP
+       ------------------------------------------------------------------ */
+    var colorMap = {
+      'red': '#c0392b', 'grey': '#95a5a6', 'gray': '#95a5a6',
+      'black': '#1a1a1a', 'white': '#ffffff', 'blue': '#2980b9',
+      'navy': '#2c3e50', 'green': '#27ae60', 'pink': '#e91e8a',
+      'beige': '#d4c5a9', 'brown': '#8B4513', 'orange': '#e67e22',
+      'yellow': '#f1c40f', 'purple': '#8e44ad', 'cream': '#FFFDD0',
+      'ivory': '#FFFFF0', 'khaki': '#c3b091', 'olive': '#808000',
+      'burgundy': '#800020', 'coral': '#FF7F50', 'teal': '#008080',
+      'maroon': '#800000', 'tan': '#D2B48C', 'gold': '#CFB53B',
+      'silver': '#C0C0C0', 'charcoal': '#36454F', 'nude': '#E3BC9A',
+      'camel': '#C19A6B', 'lavender': '#E6E6FA', 'mint': '#98FF98',
+      'rose': '#FF007F', 'rust': '#B7410E', 'sand': '#C2B280',
+      'taupe': '#483C32', 'wine': '#722F37', 'sage': '#BCB88A',
+      'mauve': '#E0B0FF', 'plum': '#8E4585', 'blush': '#DE5D83',
+      'slate': '#708090', 'denim': '#1560BD', 'chocolate': '#7B3F00'
+    };
+
+    function getColorHex(colorName) {
+      var lower = colorName.toLowerCase().trim();
+      if (colorMap[lower]) return colorMap[lower];
+      var keys = Object.keys(colorMap);
+      for (var i = 0; i < keys.length; i++) {
+        if (lower.indexOf(keys[i]) !== -1) return colorMap[keys[i]];
+      }
+      return '#cccccc';
+    }
+
+    /* ------------------------------------------------------------------
+       RENDER VARIANT OPTIONS
+       ------------------------------------------------------------------ */
+    function renderVariants(product) {
+      popupVariants.innerHTML = '';
+
+      if (!product.options || product.options.length === 0) {
+        addToCartBtn.disabled = false;
+        return;
+      }
+
+      if (product.options.length === 1 && product.options[0].name === 'Title' && product.options[0].values.length === 1 && product.options[0].values[0] === 'Default Title') {
+        addToCartBtn.disabled = false;
+        return;
+      }
+
+      /* Sort options: Color first, then others */
+      var sortedOptions = product.options.slice().sort(function(a, b) {
+        var aName = a.name.toLowerCase();
+        var bName = b.name.toLowerCase();
+        if (aName === 'color' || aName === 'colour') return -1;
+        if (bName === 'color' || bName === 'colour') return 1;
+        return 0;
+      });
+
+      sortedOptions.forEach(function(option) {
+        var group = document.createElement('div');
+        group.className = 'custom-popup__variant-group';
+
+        var label = document.createElement('span');
+        label.className = 'custom-popup__variant-label';
+        label.textContent = option.name;
+        group.appendChild(label);
+
+        var optionNameLower = option.name.toLowerCase();
+
+        /* Size: dropdown select */
+        if (optionNameLower === 'size') {
+          var selectWrapper = document.createElement('div');
+          selectWrapper.className = 'custom-popup__select-wrapper';
+
+          var select = document.createElement('select');
+          select.className = 'custom-popup__variant-select';
+          select.setAttribute('data-option-name', option.name);
+
+          var placeholder = document.createElement('option');
+          placeholder.value = '';
+          placeholder.textContent = 'Choose your ' + optionNameLower;
+          placeholder.disabled = true;
+          placeholder.selected = true;
+          select.appendChild(placeholder);
+
+          option.values.forEach(function(value) {
+            var opt = document.createElement('option');
+            opt.value = value;
+            opt.textContent = value;
+            select.appendChild(opt);
+          });
+
+          select.addEventListener('change', function() {
+            selectOption(option.name, this.value, group);
+          });
+
+          selectWrapper.appendChild(select);
+          group.appendChild(selectWrapper);
+
+        /* Color: swatch + button */
+        } else if (optionNameLower === 'color' || optionNameLower === 'colour') {
+          var optionsContainer = document.createElement('div');
+          optionsContainer.className = 'custom-popup__variant-options custom-popup__variant-options--color';
+
+          option.values.forEach(function(value) {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'custom-popup__color-item';
+            wrapper.setAttribute('data-option-name', option.name);
+            wrapper.setAttribute('data-option-value', value);
+
+            var swatch = document.createElement('span');
+            swatch.className = 'custom-popup__color-swatch';
+            swatch.style.backgroundColor = getColorHex(value);
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'custom-popup__color-btn';
+            btn.textContent = value;
+
+            wrapper.appendChild(swatch);
+            wrapper.appendChild(btn);
+
+            wrapper.addEventListener('click', function() {
+              selectOption(option.name, value, optionsContainer);
+            });
+
+            optionsContainer.appendChild(wrapper);
+          });
+
+          group.appendChild(optionsContainer);
+
+        /* Other options: standard buttons */
+        } else {
+          var optionsContainer = document.createElement('div');
+          optionsContainer.className = 'custom-popup__variant-options';
+
+          option.values.forEach(function(value) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'custom-popup__variant-option';
+            btn.textContent = value;
+            btn.setAttribute('data-option-name', option.name);
+            btn.setAttribute('data-option-value', value);
+
+            btn.addEventListener('click', function() {
+              selectOption(option.name, value, optionsContainer);
+            });
+
+            optionsContainer.appendChild(btn);
+          });
+
+          group.appendChild(optionsContainer);
+        }
+
+        popupVariants.appendChild(group);
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       SELECT OPTION
+       ------------------------------------------------------------------ */
+    function selectOption(optionName, optionValue, container) {
+      selectedOptions[optionName] = optionValue;
+
+      var selectables = container.querySelectorAll('.custom-popup__variant-option, .custom-popup__color-item');
+      for (var i = 0; i < selectables.length; i++) {
+        if (selectables[i].getAttribute('data-option-value') === optionValue) {
+          selectables[i].classList.add('custom-popup__variant-option--selected');
+        } else {
+          selectables[i].classList.remove('custom-popup__variant-option--selected');
+        }
+      }
+
+      var allSelected = currentProduct.options.every(function(option) {
+        return selectedOptions[option.name] !== undefined;
+      });
+
+      if (allSelected) {
+        var matchedVariant = findMatchingVariant();
+        if (matchedVariant && matchedVariant.available) {
+          addToCartBtn.disabled = false;
+          popupPrice.textContent = matchedVariant.price;
+        } else {
+          addToCartBtn.disabled = true;
+        }
+      }
+
+      successMsg.classList.remove('custom-popup__success-message--visible');
+    }
+
+    /* ------------------------------------------------------------------
+       FIND MATCHING VARIANT
+       ------------------------------------------------------------------ */
+    function findMatchingVariant() {
+      if (!currentProduct || !currentProduct.variants) return null;
+      return currentProduct.variants.find(function(variant) {
+        return currentProduct.options.every(function(option, index) {
+          return variant.options[index] === selectedOptions[option.name];
+        });
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       ADD TO CART
+       ------------------------------------------------------------------ */
+    function addToCart() {
+      var variant = findMatchingVariant();
+      if (!variant) return;
+
+      addToCartBtn.classList.add('custom-popup__add-to-cart--loading');
+      addToCartBtn.disabled = true;
+
+      var items = [{ id: variant.id, quantity: 1 }];
+
+      /* Auto-add Soft Winter Jacket rule */
+      var optionValues = Object.values(selectedOptions).map(function(v) {
+        return v.toLowerCase();
+      });
+      if (optionValues.indexOf('black') !== -1 && optionValues.indexOf('medium') !== -1 && softWinterJacketData) {
+        items.push({ id: softWinterJacketData.firstAvailableVariantId, quantity: 1 });
+      }
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: items })
+      })
+      .then(function(response) {
+        if (!response.ok) throw new Error('Failed to add to cart');
+        return response.json();
+      })
+      .then(function() {
+        addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
+        addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADDED!</span>';
+        successMsg.classList.add('custom-popup__success-message--visible');
+        updateCartCount();
+        setTimeout(function() {
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">' + buttonText + '</span><span class="custom-popup__atc-arrow"></span>';
+          addToCartBtn.disabled = false;
+        }, 2000);
+      })
+      .catch(function(error) {
+        console.error('Custom Product Popup: Add to cart failed', error);
+        addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
+        addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ERROR - TRY AGAIN</span>';
+        addToCartBtn.disabled = false;
+        setTimeout(function() {
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">' + buttonText + '</span><span class="custom-popup__atc-arrow"></span>';
+        }, 2000);
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       UPDATE CART COUNT
+       ------------------------------------------------------------------ */
+    function updateCartCount() {
+      fetch('/cart.js', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then(function(response) { return response.json(); })
+      .then(function(cart) {
+        var cartCountEls = document.querySelectorAll('[data-cart-count], .cart-count-bubble span, .cart-bubble__count');
+        cartCountEls.forEach(function(el) {
+          el.textContent = cart.item_count;
+        });
+      })
+      .catch(function(error) {
+        console.error('Custom Product Popup: Failed to update cart count', error);
+      });
+    }
+
+    /* ------------------------------------------------------------------
+       CARD CLICK ACTION HANDLER
+       ------------------------------------------------------------------ */
+    function handleCardAction(handle) {
+      var product = productData[handle];
+      if (!product) return;
+
+      if (cardClickAction === 'product_page') {
+        window.location.href = product.url || '/products/' + handle;
+      } else if (cardClickAction === 'add_to_cart') {
+        var variant = product.variants.find(function(v) { return v.available; });
+        if (!variant) return;
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: [{ id: variant.id, quantity: 1 }] })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function() { updateCartCount(); })
+        .catch(function(error) {
+          console.error('Custom Product Popup: Quick add to cart failed', error);
+        });
+      } else {
+        openPopup(handle);
+      }
+    }
+
+    /* ------------------------------------------------------------------
+       EVENT LISTENERS — delegated on the parent container
+       ------------------------------------------------------------------ */
+    sectionEl.addEventListener('click', function(e) {
+      var hotspot = e.target.closest('[data-popup-trigger]');
+      if (hotspot) {
+        e.stopPropagation();
+        handleCardAction(hotspot.getAttribute('data-popup-trigger'));
+        return;
+      }
+      var card = e.target.closest('.custom-product-grid__card');
+      if (card) {
+        handleCardAction(card.getAttribute('data-product-handle'));
+        return;
+      }
+    });
+
+    closeBtn.addEventListener('click', function() { closePopup(); });
+
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closePopup();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && overlay.classList.contains('custom-popup-overlay--active')) {
+        closePopup();
+      }
+    });
+
+    addToCartBtn.addEventListener('click', function() { addToCart(); });
+
+  })();
+</script>
