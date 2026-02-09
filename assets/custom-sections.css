@@ -909,30 +909,36 @@
   border-color: var(--custom-color-black);
 }
 
-/* Add to Cart button in popup — full-width with arrow icon */
+/* Add to Cart button — matches hero CTA button style (.ch__btn--primary) */
 .custom-popup__add-to-cart {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
-  padding: 16px 24px;
-  background: var(--custom-color-black);
-  color: var(--custom-color-white);
-  border: 2px solid var(--custom-color-black);
-  font-size: 14px;
-  font-weight: 600;
+  padding: 8px 20px;
+  background: var(--color-primary-button-background, var(--custom-color-black));
+  color: var(--color-primary-button-text, var(--custom-color-white));
+  border: 2px solid var(--color-primary-button-border, var(--custom-color-black));
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
+  white-space: nowrap;
   cursor: pointer;
   transition: all var(--custom-transition-speed) ease;
   margin-top: auto;
-  border-radius: 8px;
+  text-decoration: none;
 }
 
 .custom-popup__add-to-cart:hover {
-  background: var(--custom-color-white);
-  color: var(--custom-color-black);
+  background: var(--color-primary-button-hover-background, var(--custom-color-dark));
+  color: var(--color-primary-button-hover-text, var(--custom-color-white));
+  border-color: var(--color-primary-button-hover-border, var(--custom-color-dark));
+}
+
+.custom-popup__add-to-cart:active {
+  transform: scale(0.98);
 }
 
 /* ATC button text */
@@ -940,9 +946,9 @@
   pointer-events: none;
 }
 
-/* ATC arrow icon on the right side */
+/* ATC arrow icon — same as hero .ch__btn-arrow */
 .custom-popup__atc-arrow {
-  font-size: 18px;
+  font-size: 16px;
   transition: transform var(--custom-transition-speed) ease;
   pointer-events: none;
 }
