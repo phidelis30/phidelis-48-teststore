@@ -265,13 +265,13 @@
       "settings": {
         "section_width": "full-width",
         "color_scheme": "",
-        "columns": 4,
+        "columns": 3,
         "columns_mobile": "2",
         "products_to_show": 6,
         "heading": "Featured Products",
         "heading_alignment": "left",
         "heading_size": 24,
-        "padding-block-start": 0,
+        "padding-block-start": 8,
         "padding-block-end": 60
       }
     }
