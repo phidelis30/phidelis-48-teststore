@@ -323,7 +323,7 @@
           selectWrapper.appendChild(select);
           group.appendChild(selectWrapper);
 
-        /* Color option: render as large rectangular buttons with color swatch */
+        /* Color option: render as rectangular text buttons in 2-column grid */
         } else if (optionNameLower === 'color' || optionNameLower === 'colour') {
           var optionsContainer = document.createElement('div');
           optionsContainer.className = 'custom-popup__variant-options custom-popup__variant-options--color';
@@ -332,25 +332,9 @@
             var btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'custom-popup__variant-option custom-popup__color-btn';
+            btn.textContent = value;
             btn.setAttribute('data-option-name', option.name);
             btn.setAttribute('data-option-value', value);
-
-            /* Color swatch on the left side of the button */
-            var swatch = document.createElement('span');
-            swatch.className = 'custom-popup__color-swatch';
-            swatch.style.backgroundColor = getColorHex(value);
-            /* Add border for light colors so swatch is visible */
-            var hex = getColorHex(value);
-            if (hex === '#ffffff' || hex === '#FFFDD0' || hex === '#FFFFF0' || hex === '#98FF98' || hex === '#E6E6FA') {
-              swatch.style.border = '1px solid #e0e0e0';
-            }
-            btn.appendChild(swatch);
-
-            /* Color name text on the right */
-            var nameSpan = document.createElement('span');
-            nameSpan.className = 'custom-popup__color-name';
-            nameSpan.textContent = value;
-            btn.appendChild(nameSpan);
 
             btn.addEventListener('click', function() {
               selectOption(option.name, value, optionsContainer);
