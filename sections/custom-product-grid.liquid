@@ -15,27 +15,22 @@
   assign grid_parent_id = 'ProductGrid-' | append: section.id
 -%}
 
-{%- comment -%} Scoped styles for dynamic customizer values {%- endcomment -%}
 <style>
   #ProductGrid-{{ section.id }} {
     --cpg-columns: {{ columns }};
     --cpg-columns-mobile: {{ columns_mobile }};
     --cpg-heading-size: {{ heading_size }}px;
     --cpg-heading-align: {{ heading_alignment }};
-
-    /* Desktop padding — set here instead of inline so mobile @media can override */
     --padding-block-start: {{ section.settings.padding-block-start | default: 60 }}px;
     --padding-block-end: {{ section.settings.padding-block-end | default: 60 }}px;
     --padding-inline-start: {{ section.settings.padding-inline-start | default: 0 }}px;
     --padding-inline-end: {{ section.settings.padding-inline-end | default: 0 }}px;
   }
 
-  /* Hide cards beyond the products_to_show limit */
   #ProductGrid-{{ section.id }} .custom-product-grid__grid > .custom-product-grid__card:nth-child(n + {{ products_to_show | plus: 1 }}) {
     display: none;
   }
 
-  /* Mobile padding overrides */
   @media screen and (max-width: 749px) {
     #ProductGrid-{{ section.id }} {
       --padding-block-start: {{ section.settings.mobile-padding-block-start | default: 40 }}px;
@@ -46,46 +41,30 @@
   }
 </style>
 
-{%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 
 <section
   id="ProductGrid-{{ section.id }}"
   class="custom-product-grid section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style{% if show_title %} custom-product-grid--show-title{% endif %}{% if show_price %} custom-product-grid--show-price{% endif %}{% if show_description %} custom-product-grid--show-description{% endif %}"
-  style=""
   data-section-id="{{ section.id }}"
   data-section-type="custom-product-grid"
   data-card-click-action="{{ card_click_action }}"
   data-button-text="{{ button_text | escape }}"
 >
-
-  {%- comment -%} Section heading {%- endcomment -%}
   {%- if section.settings.heading != blank -%}
     <h2 class="custom-product-grid__heading">{{ section.settings.heading }}</h2>
   {%- endif -%}
 
-  {%- comment -%}
-    Product cards grid — rendered via content_for 'blocks' for proper
-    theme-level block rendering. Each block embeds its own product JSON
-    data for the popup JS. Display limit handled via CSS :nth-child above.
-  {%- endcomment -%}
   <div class="custom-product-grid__grid">
     {%- content_for 'blocks' -%}
   </div>
 
-  {%- comment -%}
-    ========================================================================
-    Product Popup — rendered via reusable snippet so the popup + JS can be
-    shared by any section that contains custom-product-card blocks.
-    ========================================================================
-  {%- endcomment -%}
   {% render 'custom-product-popup',
     section_id: section.id,
     parent_id: grid_parent_id,
     card_click_action: card_click_action,
     button_text: button_text
   %}
-
 </section>
 
 {% schema %}

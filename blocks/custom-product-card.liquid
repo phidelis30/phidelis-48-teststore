@@ -1,14 +1,3 @@
-{% comment %}
-  ============================================================================
-  Block: Custom Product Card
-  ============================================================================
-  Renders a product image with a centered hotspot button.
-  Designed for use inside the Custom Product Grid section,
-  but can also be added to any section that accepts @theme blocks.
-
-  Card-level settings: color scheme, border, border-radius, padding.
-{% endcomment %}
-
 {%- assign product = block.settings.product -%}
 
 {%- if product != blank -%}
@@ -49,7 +38,6 @@
     {% if card_styles != blank %}style="{{ card_styles | strip_newlines | strip }}"{% endif %}
     {{ block.shopify_attributes }}
   >
-    {%- comment -%} Product image with hotspot button {%- endcomment -%}
     <div class="custom-product-grid__image-wrapper">
       {%- if product.featured_image != blank -%}
         <img
@@ -64,7 +52,6 @@
         {{ 'product-1' | placeholder_svg_tag: 'custom-product-grid__image' }}
       {%- endif -%}
 
-      {%- comment -%} Hotspot circle button — opens popup on click {%- endcomment -%}
       <button
         class="custom-product-grid__hotspot custom-product-grid__hotspot--{{ hotspot_position }}"
         type="button"
@@ -75,14 +62,12 @@
       </button>
     </div>
 
-    {%- comment -%} Product title, price, description (visibility controlled by section CSS classes) {%- endcomment -%}
     <div class="custom-product-grid__info">
       <h3 class="custom-product-grid__title">{{ product.title }}</h3>
       <p class="custom-product-grid__price">{{ product.price | money }}</p>
       <p class="custom-product-grid__description">{{ product.description | strip_html | truncate: 100 }}</p>
     </div>
 
-    {%- comment -%} Embedded product data for popup JS (hidden script, no visual impact) {%- endcomment -%}
     <script type="application/json" class="cpg-product-data">
       {
         "handle": {{ product.handle | json }},

@@ -1,9 +1,3 @@
-{% comment %}
-  ============================================================================
-  Section: Custom Banner (Announcement Bar)
-  ============================================================================
-{% endcomment %}
-
 {{ 'custom-sections.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
@@ -15,7 +9,6 @@
   assign btn_border_color = section.settings.button_border_color | default: '#E8D44D'
 -%}
 
-{%- comment -%} Scoped styles: dynamic customizer values applied per section instance {%- endcomment -%}
 <style>
   #CustomBanner-{{ section.id }} {
     --cb-btn-bg: {{ btn_bg }};
@@ -26,7 +19,6 @@
   }
 </style>
 
-{%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 
 <section
@@ -37,10 +29,7 @@
   data-section-type="custom-banner"
   role="banner"
 >
-  {%- comment -%} ===== DESKTOP BAR ===== {%- endcomment -%}
   <div class="cb__bar">
-
-    {%- comment -%} Left: Logo (image or text) — links to home page {%- endcomment -%}
     <a class="cb__logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }}">
       {%- if section.settings.logo_image != blank -%}
         <img
@@ -56,12 +45,10 @@
       {%- endif -%}
     </a>
 
-    {%- comment -%} Center: Promotional text (hidden on mobile) {%- endcomment -%}
     {%- if section.settings.promo_text != blank -%}
       <p class="cb__promo-text">{{ section.settings.promo_text }}</p>
     {%- endif -%}
 
-    {%- comment -%} Right: CTA button with arrow (hidden on mobile) {%- endcomment -%}
     {%- if section.settings.button_text != blank -%}
       <a
         href="{{ section.settings.button_link }}"
@@ -73,7 +60,6 @@
       </a>
     {%- endif -%}
 
-    {%- comment -%} Mobile toggle button: hamburger / close {%- endcomment -%}
     <button
       class="cb__toggle"
       type="button"
@@ -81,13 +67,11 @@
       aria-expanded="false"
       data-cb-toggle="{{ section.id }}"
     >
-      {%- comment -%} Hamburger icon (3 lines) {%- endcomment -%}
       <svg class="cb__toggle-open" width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <line y1="1" x2="20" y2="1" stroke="currentColor" stroke-width="2"/>
         <line y1="7" x2="20" y2="7" stroke="currentColor" stroke-width="2"/>
         <line y1="13" x2="20" y2="13" stroke="currentColor" stroke-width="2"/>
       </svg>
-      {%- comment -%} Close icon (X) {%- endcomment -%}
       <svg class="cb__toggle-close" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <line x1="1.41" y1="1" x2="15" y2="14.59" stroke="currentColor" stroke-width="2"/>
         <line x1="1" y1="14.59" x2="14.59" y2="1" stroke="currentColor" stroke-width="2"/>
@@ -95,18 +79,15 @@
     </button>
   </div>
 
-  {%- comment -%} ===== MOBILE PANEL (slide down — no logo, just text + button) ===== {%- endcomment -%}
   <div
     class="cb__panel"
     id="CustomBannerPanel-{{ section.id }}"
     aria-hidden="true"
   >
-    {%- comment -%} Promo text in panel {%- endcomment -%}
     {%- if section.settings.promo_text != blank -%}
       <p class="cb__panel-promo">{{ section.settings.promo_text }}</p>
     {%- endif -%}
 
-    {%- comment -%} CTA button in panel {%- endcomment -%}
     {%- if section.settings.button_text != blank -%}
       <a
         href="{{ section.settings.button_link }}"
@@ -120,14 +101,6 @@
   </div>
 </section>
 
-{%- comment -%}
-  ============================================================================
-  Vanilla JavaScript — Mobile Panel Toggle
-  ============================================================================
-  Handles the hamburger/close toggle on mobile to expand/collapse the panel.
-  No jQuery. Uses data attributes scoped to section ID for multi-instance support.
-  ============================================================================
-{%- endcomment -%}
 <script>
   (function() {
     'use strict';
@@ -139,20 +112,14 @@
 
     if (!toggleBtn || !panel) return;
 
-    /**
-     * Toggle the mobile panel open/closed.
-     * Updates aria attributes and CSS class for animation.
-     */
     toggleBtn.addEventListener('click', function() {
       var isOpen = sectionEl.classList.contains('cb--panel-open');
 
       if (isOpen) {
-        /* Close the panel */
         sectionEl.classList.remove('cb--panel-open');
         panel.setAttribute('aria-hidden', 'true');
         toggleBtn.setAttribute('aria-expanded', 'false');
       } else {
-        /* Open the panel */
         sectionEl.classList.add('cb--panel-open');
         panel.setAttribute('aria-hidden', 'false');
         toggleBtn.setAttribute('aria-expanded', 'true');

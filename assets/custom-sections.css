@@ -1,12 +1,5 @@
-/* ==========================================================================
-   Custom Sections Stylesheet
-   Covers: Banner Section , Hero Section, (Announcement Bar) & Product Grid Section (with Popup)
-   Author: Ecomexperts Test
-   ========================================================================== */
+/* Custom Sections — Banner, Hero, Product Grid, Popup */
 
-/* --------------------------------------------------------------------------
-   1. CSS CUSTOM PROPERTIES (shared)
-   -------------------------------------------------------------------------- */
 :root {
   --custom-font-primary: 'Inter', sans-serif;
   --custom-color-white: #ffffff;
@@ -21,14 +14,8 @@
   --custom-section-max-width: 1200px;
 }
 
-/* ==========================================================================
-   2. CUSTOM BANNER — Announcement Bar
-   ==========================================================================
-   Desktop: Horizontal bar — Logo (left) | Promo text (center) | CTA (right)
-   Mobile:  Logo centered + hamburger toggle → expands to full panel
-   ========================================================================== */
+/* ========== BANNER (Announcement Bar) ========== */
 
-/* Section container: inherits colors from color-{{ scheme }} class */
 .cb {
   background-color: var(--color-background);
   color: var(--color-foreground);
@@ -36,12 +23,6 @@
   position: relative;
 }
 
-/* --------------------------------------------------------------------------
-   2a. DESKTOP BAR
-   -------------------------------------------------------------------------- */
-
-/* Main horizontal bar: 3-column flex layout */
-/* Padding is handled by the spacing-style class + spacing-padding snippet */
 .cb__bar {
   display: flex;
   align-items: center;
@@ -50,7 +31,6 @@
   gap: 16px;
 }
 
-/* Logo container: links to home page, no underline */
 .cb__logo {
   flex-shrink: 0;
   text-decoration: none;
@@ -59,7 +39,6 @@
   align-items: center;
 }
 
-/* Logo as text: bold uppercase brand name — inherits color from color scheme */
 .cb__logo-text {
   font-size: 16px;
   font-weight: 800;
@@ -69,14 +48,12 @@
   white-space: nowrap;
 }
 
-/* Logo as image */
 .cb__logo-img {
   display: block;
   width: auto;
   object-fit: contain;
 }
 
-/* Center promo text — inherits color from color scheme */
 .cb__promo-text {
   flex: 1;
   text-align: center;
@@ -89,7 +66,6 @@
   text-overflow: ellipsis;
 }
 
-/* CTA button: yellow bg, black text, with arrow */
 .cb__btn {
   display: inline-flex;
   align-items: center;
@@ -111,29 +87,24 @@
   flex-shrink: 0;
 }
 
-/* Button arrow icon */
 .cb__btn-arrow {
   font-size: 16px;
   transition: transform var(--custom-transition-speed) ease;
 }
 
-/* Button hover animation: slight shift + color change */
 .cb__btn:hover {
   background: var(--cb-btn-hover-bg, #d4c043);
   color: var(--cb-btn-hover-text, #000000);
 }
 
-/* Arrow slides right on hover */
 .cb__btn:hover .cb__btn-arrow {
   transform: translateX(4px);
 }
 
-/* Button active/press: remove lift */
 .cb__btn:active {
   transform: scale(0.98);
 }
 
-/* Mobile toggle button: hidden on desktop */
 .cb__toggle {
   display: none;
   align-items: center;
@@ -146,19 +117,13 @@
   flex-shrink: 0;
 }
 
-/* Toggle icon states: show hamburger, hide close by default */
 .cb__toggle-open { display: block; }
 .cb__toggle-close { display: none; }
-
-/* When panel is open: swap icons */
 .cb--panel-open .cb__toggle-open { display: none; }
 .cb--panel-open .cb__toggle-close { display: block; }
 
-/* --------------------------------------------------------------------------
-   2b. MOBILE PANEL (hidden by default, slides down when toggled)
-   -------------------------------------------------------------------------- */
+/* Banner mobile panel */
 
-/* Panel: slides down from the bar — inherits bg from color scheme */
 .cb__panel {
   display: none;
   flex-direction: column;
@@ -168,7 +133,6 @@
   border-top: 1px solid var(--color-border, var(--custom-color-border));
 }
 
-/* Panel promo text — inherits color from color scheme */
 .cb__panel-promo {
   font-size: 14px;
   font-weight: 400;
@@ -177,7 +141,6 @@
   margin: 0;
 }
 
-/* Panel CTA button: full-width yellow button with arrow */
 .cb__panel-btn {
   display: inline-flex;
   align-items: center;
@@ -213,55 +176,33 @@
   transform: translateX(4px);
 }
 
-/* --------------------------------------------------------------------------
-   2c. BANNER RESPONSIVE — Mobile breakpoint at 749px
-   -------------------------------------------------------------------------- */
+/* Banner responsive */
 
 @media screen and (max-width: 749px) {
-  /* Bar: reduce horizontal padding on mobile */
-  .cb__bar {
-    padding-inline: 16px;
-  }
-
-  /* Hide promo text and CTA button on mobile bar */
+  .cb__bar { padding-inline: 16px; }
   .cb__promo-text { display: none; }
   .cb__btn { display: none; }
-
-  /* Show mobile toggle */
-  .cb__toggle { display: flex; }
-
-  /* Logo centered, toggle on the left via order */
-  .cb__toggle { order: -1; }
+  .cb__toggle { display: flex; order: -1; }
   .cb__logo { flex: 1; text-align: center; }
 
-  /* Panel: visible when open */
   .cb--panel-open .cb__panel {
     display: flex;
   }
 }
 
-/* ==========================================================================
-   3. CUSTOM HERO SECTION
-   ==========================================================================
-   Full-width hero with 100% background image and left-aligned text overlay.
-   Content position is configurable: top-left, top-right, center,
-   bottom-left (default), bottom-right.
-   ========================================================================== */
+/* ========== HERO SECTION ========== */
 
-/* Hero wrapper: relative container for image + overlay + content */
 .ch {
   position: relative;
   overflow: hidden;
 }
 
-/* Media wrapper: holds the background image at 100% */
 .ch__media {
   position: relative;
   width: 100%;
   min-height: var(--ch-min-height, 500px);
 }
 
-/* Background image: covers full area */
 .ch__image {
   display: block;
   width: 100%;
@@ -271,17 +212,14 @@
   object-position: center;
 }
 
-/* Mobile image: hidden by default, shown on mobile */
 .ch__image--mobile {
   display: none;
 }
 
-/* Placeholder SVG when no image uploaded */
 .ch__placeholder {
   background: var(--color-background);
 }
 
-/* Optional dark overlay on the image */
 .ch__overlay {
   position: absolute;
   inset: 0;
@@ -289,8 +227,6 @@
   pointer-events: none;
 }
 
-/* Content overlay: absolutely positioned over the image */
-/* Desktop: one wrapper per position group. Mobile: display:contents (see 3a-mobile) */
 .ch__content {
   position: absolute;
   inset: 0;
@@ -299,7 +235,6 @@
   pointer-events: none;
 }
 
-/* Content inner: constrains text width, re-enables click */
 .ch__content-inner {
   max-width: var(--ch-content-width, 50%);
   display: flex;
@@ -308,63 +243,18 @@
   pointer-events: auto;
 }
 
-/* --------------------------------------------------------------------------
-   3a. Content position modifiers (9-point grid)
-   --------------------------------------------------------------------------
-   flex-direction: row (default) →
-     justify-content = horizontal (left / center / right)
-     align-items     = vertical   (top  / center / bottom)
-   -------------------------------------------------------------------------- */
+/* Content position modifiers (9-point grid) */
 
-/* Top row */
-.ch__content--top-left {
-  justify-content: flex-start;
-  align-items: flex-start;
-}
+.ch__content--top-left      { justify-content: flex-start; align-items: flex-start; }
+.ch__content--top-center    { justify-content: center;     align-items: flex-start; }
+.ch__content--top-right     { justify-content: flex-end;   align-items: flex-start; }
+.ch__content--center-left   { justify-content: flex-start; align-items: center; }
+.ch__content--center        { justify-content: center;     align-items: center; }
+.ch__content--center-right  { justify-content: flex-end;   align-items: center; }
+.ch__content--bottom-left   { justify-content: flex-start; align-items: flex-end; }
+.ch__content--bottom-center { justify-content: center;     align-items: flex-end; }
+.ch__content--bottom-right  { justify-content: flex-end;   align-items: flex-end; }
 
-.ch__content--top-center {
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.ch__content--top-right {
-  justify-content: flex-end;
-  align-items: flex-start;
-}
-
-/* Center row */
-.ch__content--center-left {
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.ch__content--center {
-  justify-content: center;
-  align-items: center;
-}
-
-.ch__content--center-right {
-  justify-content: flex-end;
-  align-items: center;
-}
-
-/* Bottom row */
-.ch__content--bottom-left {
-  justify-content: flex-start;
-  align-items: flex-end;
-}
-
-.ch__content--bottom-center {
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.ch__content--bottom-right {
-  justify-content: flex-end;
-  align-items: flex-end;
-}
-
-/* Center-column text alignment */
 .ch__content--top-center .ch__content-inner,
 .ch__content--center .ch__content-inner,
 .ch__content--bottom-center .ch__content-inner {
@@ -372,7 +262,6 @@
   align-items: center;
 }
 
-/* Right-column text alignment */
 .ch__content--top-right .ch__content-inner,
 .ch__content--center-right .ch__content-inner,
 .ch__content--bottom-right .ch__content-inner {
@@ -380,15 +269,12 @@
   align-items: flex-end;
 }
 
-/* --------------------------------------------------------------------------
-   3a-mobile. Per-block mobile positioning via Flex column + display:contents
-   On mobile the hero becomes a flex column. Two invisible spacers (::before
-   order 2, ::after order 4) with flex:1 absorb free space, creating three
-   spatial zones:  top (order 1) | spacer | center (order 3) | spacer | bottom (order 5).
-   Blocks stack vertically within each zone (no overlap).
-   -------------------------------------------------------------------------- */
+/*
+ * Mobile: flex column + display:contents for per-block positioning.
+ * ::before (order 2) and ::after (order 4) act as spacers,
+ * creating 3 zones: top (1) | center (3) | bottom (5).
+ */
 @media screen and (max-width: 749px) {
-  /* Hero becomes a flex column on mobile */
   .ch {
     display: flex;
     flex-direction: column;
@@ -397,7 +283,6 @@
     padding: 24px;
   }
 
-  /* Flexible spacers create the 3 vertical zones */
   .ch::before,
   .ch::after {
     content: '';
@@ -407,19 +292,16 @@
   .ch::before { order: 2; }
   .ch::after  { order: 4; }
 
-  /* Background image positioned absolutely behind the flex items */
   .ch .ch__media {
     position: absolute;
     inset: 0;
   }
 
-  /* Desktop group wrappers become invisible — children promoted to flex items */
   .ch .ch__content,
   .ch .ch__content-inner {
     display: contents;
   }
 
-  /* Block elements as flex items: above background, clickable */
   .ch .ch__subtitle,
   .ch .ch__heading,
   .ch .ch__description,
@@ -429,29 +311,20 @@
     position: relative;
   }
 
-  /* ---- Per-block mobile position classes ---- */
-
-  /* Top zone (order 1 — before ::before spacer) */
+  /* Per-block mobile position classes */
   .ch__block-mobile--top-left      { order: 1; align-self: flex-start; text-align: left; }
   .ch__block-mobile--top-center    { order: 1; align-self: center;     text-align: center; }
   .ch__block-mobile--top-right     { order: 1; align-self: flex-end;   text-align: right; }
-
-  /* Center zone (order 3 — between the two spacers) */
   .ch__block-mobile--center-left   { order: 3; align-self: flex-start; text-align: left; }
   .ch__block-mobile--center        { order: 3; align-self: center;     text-align: center; }
   .ch__block-mobile--center-right  { order: 3; align-self: flex-end;   text-align: right; }
-
-  /* Bottom zone (order 5 — after ::after spacer) */
   .ch__block-mobile--bottom-left   { order: 5; align-self: flex-start; text-align: left; }
   .ch__block-mobile--bottom-center { order: 5; align-self: center;     text-align: center; }
   .ch__block-mobile--bottom-right  { order: 5; align-self: flex-end;   text-align: right; }
 }
 
-/* --------------------------------------------------------------------------
-   3b. Hero typography
-   -------------------------------------------------------------------------- */
+/* Hero typography */
 
-/* Subtitle / eyebrow */
 .ch__subtitle {
   font-size: 12px;
   font-weight: 600;
@@ -462,7 +335,6 @@
   opacity: 0.8;
 }
 
-/* Main heading */
 .ch__heading {
   font-size: 48px;
   font-weight: 800;
@@ -471,7 +343,6 @@
   color: var(--color-foreground-heading, currentColor);
 }
 
-/* Description text */
 .ch__description {
   font-size: 14px;
   line-height: 1.6;
@@ -480,11 +351,8 @@
   max-width: 480px;
 }
 
-/* --------------------------------------------------------------------------
-   3c. Hero CTA button
-   -------------------------------------------------------------------------- */
+/* Hero CTA button */
 
-/* Base button styles */
 .ch__btn {
   display: inline-flex;
   align-items: center;
@@ -502,7 +370,6 @@
   width: fit-content;
 }
 
-/* Primary: dark bg, white text */
 .ch__btn--primary {
   background: var(--color-primary-button-background, var(--custom-color-black));
   color: var(--color-primary-button-text, var(--custom-color-white));
@@ -515,7 +382,6 @@
   border-color: var(--color-primary-button-hover-border, var(--custom-color-dark));
 }
 
-/* Secondary: transparent bg, dark text */
 .ch__btn--secondary {
   background: var(--color-secondary-button-background, transparent);
   color: var(--color-secondary-button-text, var(--custom-color-black));
@@ -528,7 +394,6 @@
   border-color: var(--color-secondary-button-hover-border, var(--custom-color-black));
 }
 
-/* Button arrow animation */
 .ch__btn-arrow {
   font-size: 16px;
   transition: transform var(--custom-transition-speed) ease;
@@ -542,69 +407,37 @@
   transform: scale(0.98);
 }
 
-/* --------------------------------------------------------------------------
-   3d. Hero responsive
-   -------------------------------------------------------------------------- */
+/* Hero responsive */
 
 @media screen and (max-width: 991px) {
-  .ch__heading {
-    font-size: 38px;
-  }
-
-  .ch__content-inner {
-    max-width: 60%;
-  }
+  .ch__heading { font-size: 38px; }
+  .ch__content-inner { max-width: 60%; }
 }
 
 @media screen and (max-width: 749px) {
-  .ch__media {
-    min-height: var(--ch-min-height-mobile, 400px);
-  }
+  .ch__media { min-height: var(--ch-min-height-mobile, 400px); }
+  .ch__image { min-height: var(--ch-min-height-mobile, 400px); }
 
-  .ch__image {
-    min-height: var(--ch-min-height-mobile, 400px);
-  }
-
-  /* Show mobile image if available, hide desktop */
   .ch__image--mobile {
     display: block;
     min-height: var(--ch-min-height-mobile, 400px);
   }
 
-  .ch__image--mobile ~ .ch__image:not(.ch__image--mobile) {
-    display: none;
-  }
+  .ch__image--mobile ~ .ch__image:not(.ch__image--mobile) { display: none; }
+  .ch__media:has(.ch__image--mobile) > .ch__image:first-child { display: none; }
 
-  /* Reverse order: hide desktop when mobile exists */
-  .ch__media:has(.ch__image--mobile) > .ch__image:first-child {
-    display: none;
-  }
-
-  .ch__heading {
-    font-size: 32px;
-  }
-
-  .ch__description {
-    font-size: 13px;
-  }
-
-  .ch__btn {
-    padding: 12px 24px;
-    font-size: 11px;
-  }
+  .ch__heading { font-size: 32px; }
+  .ch__description { font-size: 13px; }
+  .ch__btn { padding: 12px 24px; font-size: 11px; }
 }
 
-/* ==========================================================================
-   4. PRODUCT GRID SECTION
-   ========================================================================== */
+/* ========== PRODUCT GRID ========== */
 
-/* Grid section wrapper — relies on theme .section--page-width / .section--full-width for width */
 .custom-product-grid {
   background-color: var(--color-background);
   color: var(--color-foreground);
 }
 
-/* Section heading above the grid — size & alignment driven by section settings */
 .custom-product-grid__heading {
   font-size: var(--cpg-heading-size, 20px);
   font-weight: 400;
@@ -613,21 +446,18 @@
   color: var(--color-foreground);
 }
 
-/* Dynamic column grid layout for product cards */
 .custom-product-grid__grid {
   display: grid;
   grid-template-columns: repeat(var(--cpg-columns, 3), 1fr);
   gap: var(--custom-grid-gap);
 }
 
-/* Individual product card — flat, borderless per design */
 .custom-product-grid__card {
   position: relative;
   overflow: hidden;
   cursor: pointer;
 }
 
-/* Product image wrapper with aspect ratio */
 .custom-product-grid__image-wrapper {
   position: relative;
   width: 100%;
@@ -636,7 +466,6 @@
   background: rgba(var(--color-foreground-rgb), 0.04);
 }
 
-/* Product image: fills container, covers area */
 .custom-product-grid__image {
   width: 100%;
   height: 100%;
@@ -648,7 +477,8 @@
   transform: scale(1.03);
 }
 
-/* Clickable hotspot circle — configurable position on product image */
+/* Hotspot button */
+
 .custom-product-grid__hotspot {
   position: absolute;
   width: 32px;
@@ -671,7 +501,7 @@
   transform: scale(1.1);
 }
 
-/* Hotspot position variants — 9-point grid with 12px offset from edges */
+/* Hotspot positions (12px offset from edges) */
 .custom-product-grid__hotspot--top-left      { top: 12px;  left: 12px; }
 .custom-product-grid__hotspot--top-center    { top: 12px;  left: 50%; transform: translateX(-50%); }
 .custom-product-grid__hotspot--top-right     { top: 12px;  right: 12px; }
@@ -682,14 +512,13 @@
 .custom-product-grid__hotspot--bottom-center { bottom: 12px; left: 50%; transform: translateX(-50%); }
 .custom-product-grid__hotspot--bottom-right  { bottom: 12px; right: 12px; }
 
-/* Preserve transform on hover for positioned variants that use transform */
+/* Preserve transform on hover for centered variants */
 .custom-product-grid__hotspot--top-center:hover    { transform: translateX(-50%) scale(1.1); }
 .custom-product-grid__hotspot--center-left:hover   { transform: translateY(-50%) scale(1.1); }
 .custom-product-grid__hotspot--center:hover        { transform: translate(-50%, -50%) scale(1.1); }
 .custom-product-grid__hotspot--center-right:hover  { transform: translateY(-50%) scale(1.1); }
 .custom-product-grid__hotspot--bottom-center:hover { transform: translateX(-50%) scale(1.1); }
 
-/* Plus icon inside hotspot */
 .custom-product-grid__hotspot-icon {
   font-size: 16px;
   font-weight: 600;
@@ -698,20 +527,19 @@
   color: var(--custom-color-black);
 }
 
-/* Product info below image — hidden by default, toggled via section modifier classes */
+/* Card info (toggled by section modifier classes) */
+
 .custom-product-grid__info {
   display: none;
   padding: 8px 0 0;
 }
 
-/* Show info container when any card display setting is active */
 .custom-product-grid--show-title .custom-product-grid__info,
 .custom-product-grid--show-price .custom-product-grid__info,
 .custom-product-grid--show-description .custom-product-grid__info {
   display: block;
 }
 
-/* Individual card elements: hidden by default, shown by section class */
 .custom-product-grid__title {
   font-size: 14px;
   font-weight: 400;
@@ -741,11 +569,8 @@
 .custom-product-grid--show-price .custom-product-grid__price { display: block; }
 .custom-product-grid--show-description .custom-product-grid__description { display: block; }
 
-/* ==========================================================================
-   5. PRODUCT POPUP / MODAL
-   ========================================================================== */
+/* ========== POPUP / MODAL ========== */
 
-/* Full-screen overlay backdrop */
 .custom-popup-overlay {
   position: fixed;
   top: 0;
@@ -763,13 +588,11 @@
               visibility var(--custom-transition-speed) ease;
 }
 
-/* Active state: visible overlay */
 .custom-popup-overlay--active {
   opacity: 1;
   visibility: visible;
 }
 
-/* Popup container: vertical layout — top row + bottom section */
 .custom-popup {
   background: var(--custom-color-white);
   border-radius: 0;
@@ -786,12 +609,10 @@
   font-family: var(--font-body--family);
 }
 
-/* Scale in when active */
 .custom-popup-overlay--active .custom-popup {
   transform: scale(1);
 }
 
-/* Close button top-right corner — plain X */
 .custom-popup__close {
   position: absolute;
   top: 16px;
@@ -817,7 +638,6 @@
   opacity: 0.6;
 }
 
-/* Top row: image (left ~40%) + info (right ~60%) side by side */
 .custom-popup__top {
   display: flex;
   flex-direction: row;
@@ -825,7 +645,6 @@
   gap: 16px;
 }
 
-/* Product image in top row — ~40% width, square aspect */
 .custom-popup__image-wrapper {
   flex: 0 0 40%;
   width: 40%;
@@ -839,7 +658,6 @@
   display: block;
 }
 
-/* Product info beside the image */
 .custom-popup__info {
   flex: 1;
   display: flex;
@@ -848,7 +666,6 @@
   padding-top: 0;
 }
 
-/* Product name */
 .custom-popup__name {
   font-family: var(--font-heading--family);
   font-size: 18px;
@@ -858,7 +675,6 @@
   line-height: 1.35;
 }
 
-/* Product price */
 .custom-popup__price {
   font-family: var(--font-body--family);
   font-size: 16px;
@@ -867,7 +683,6 @@
   margin: 2px 0 0;
 }
 
-/* Product description */
 .custom-popup__description {
   font-family: var(--font-body--family);
   font-size: 14px;
@@ -876,7 +691,6 @@
   margin: 4px 0 0;
 }
 
-/* Bottom section: variants + ATC — full width */
 .custom-popup__bottom {
   padding: 0 24px 24px;
   display: flex;
@@ -884,7 +698,6 @@
   gap: 16px;
 }
 
-/* Variant option group in popup */
 .custom-popup__variant-group {
   margin-bottom: 12px;
 }
@@ -900,21 +713,18 @@
   display: block;
 }
 
-/* Variant options container (flex row of buttons) */
 .custom-popup__variant-options {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-/* Color options: 2-column grid, no gap — items share borders */
 .custom-popup__variant-options--color {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
 }
 
-/* Individual variant option button (generic) */
 .custom-popup__variant-option {
   padding: 8px 16px;
   border: 1px solid var(--custom-color-border);
@@ -931,26 +741,20 @@
   border-color: var(--custom-color-black);
 }
 
-/* Selected variant option: dark border highlight */
 .custom-popup__variant-option--selected {
   background: var(--custom-color-black);
   color: var(--custom-color-white);
   border-color: var(--custom-color-black);
 }
 
-/* Unavailable variant: dimmed and not clickable */
 .custom-popup__variant-option--unavailable {
   opacity: 0.4;
   cursor: not-allowed;
   text-decoration: line-through;
 }
 
-/* --------------------------------------------------------------------------
-   Color variant — div wrapper with color swatch + button
-   Items sit side by side with shared borders (table-cell look).
-   -------------------------------------------------------------------------- */
+/* Color variant swatches */
 
-/* Wrapper div: flex row, 1px border — shared with adjacent items */
 .custom-popup__color-item {
   display: flex;
   flex-direction: row;
@@ -962,7 +766,6 @@
   transition: border-color var(--custom-transition-speed) ease;
 }
 
-/* Collapse left border on the second item to avoid double border */
 .custom-popup__color-item:nth-child(2) {
   border-left: none;
 }
@@ -971,14 +774,12 @@
   border-color: var(--custom-color-black);
 }
 
-/* Color swatch span: narrow strip showing the actual color */
 .custom-popup__color-swatch {
   flex: 0 0 6%;
   width: 6%;
   border-right: 1px solid var(--custom-color-black);
 }
 
-/* Button: remaining width, shows color name text */
 .custom-popup__color-btn {
   flex: 1;
   padding: 14px 16px;
@@ -997,22 +798,18 @@
   color: var(--custom-color-black);
 }
 
-/* Selected state: button bg black, text white — swatch keeps showing color */
 .custom-popup__color-item.custom-popup__variant-option--selected .custom-popup__color-btn {
   background: var(--custom-color-black);
   color: var(--custom-color-white);
 }
 
-/* --------------------------------------------------------------------------
-   Size select dropdown with vertical separator + chevron compartment
-   Border is black, text centered, separator spans full height.
-   -------------------------------------------------------------------------- */
+/* Size select dropdown */
+
 .custom-popup__select-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* Vertical separator bar — full height, black, divides text from chevron */
 .custom-popup__select-wrapper::before {
   content: '';
   position: absolute;
@@ -1025,7 +822,6 @@
   z-index: 1;
 }
 
-/* Chevron icon — centered within the right compartment */
 .custom-popup__select-wrapper::after {
   content: '';
   position: absolute;
@@ -1063,10 +859,7 @@
   transition: border-color var(--custom-transition-speed) ease;
 }
 
-/* Remove native browser select arrow and separator */
-.custom-popup__variant-select::-ms-expand {
-  display: none;
-}
+.custom-popup__variant-select::-ms-expand { display: none; }
 
 .custom-popup__variant-select::-webkit-inner-spin-button,
 .custom-popup__variant-select::-webkit-outer-spin-button {
@@ -1079,12 +872,12 @@
   border-color: var(--custom-color-black);
 }
 
-/* Style native dropdown options — centered text */
 .custom-popup__variant-select option {
   text-align: center;
 }
 
-/* Add to Cart button — centered text, arrow positioned far right */
+/* Add to Cart button */
+
 .custom-popup__add-to-cart {
   position: relative;
   display: flex;
@@ -1116,12 +909,10 @@
   transform: scale(0.98);
 }
 
-/* ATC button text — centered */
 .custom-popup__atc-text {
   pointer-events: none;
 }
 
-/* ATC arrow — positioned absolutely on the far right */
 .custom-popup__atc-arrow {
   position: absolute;
   right: 24px;
@@ -1133,7 +924,6 @@
   transition: transform var(--custom-transition-speed) ease;
 }
 
-/* Long arrow: horizontal line + arrowhead */
 .custom-popup__atc-arrow::before {
   content: '';
   display: inline-block;
@@ -1157,13 +947,11 @@
   right: 20px;
 }
 
-/* Disabled state for Add to Cart button */
 .custom-popup__add-to-cart:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* Loading spinner for add-to-cart feedback */
 .custom-popup__add-to-cart--loading {
   pointer-events: none;
   position: relative;
@@ -1192,7 +980,6 @@
   to { transform: rotate(360deg); }
 }
 
-/* Success message after adding to cart */
 .custom-popup__success-message {
   text-align: center;
   color: #2e7d32;
@@ -1208,11 +995,8 @@
   display: block;
 }
 
-/* ==========================================================================
-   6. RESPONSIVE — Product Grid & Popup
-   ========================================================================== */
+/* ========== RESPONSIVE — Product Grid & Popup ========== */
 
-/* Tablet: 2-column grid */
 @media screen and (max-width: 991px) {
   .custom-product-grid__grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1223,7 +1007,6 @@
   }
 }
 
-/* Mobile: stacked popup and adjusted grid */
 @media screen and (max-width: 749px) {
   .custom-product-grid__grid {
     grid-template-columns: repeat(var(--cpg-columns-mobile, 2), 1fr);
@@ -1235,7 +1018,6 @@
     margin-bottom: 16px;
   }
 
-  /* Smaller hotspot button on mobile */
   .custom-product-grid__hotspot {
     width: 24px;
     height: 24px;
@@ -1245,7 +1027,6 @@
     font-size: 12px;
   }
 
-  /* Tighter offset from edges on mobile */
   .custom-product-grid__hotspot--top-left      { top: 8px;  left: 8px; }
   .custom-product-grid__hotspot--top-center    { top: 8px; }
   .custom-product-grid__hotspot--top-right     { top: 8px;  right: 8px; }
@@ -1255,7 +1036,6 @@
   .custom-product-grid__hotspot--bottom-center { bottom: 8px; }
   .custom-product-grid__hotspot--bottom-right  { bottom: 8px; right: 8px; }
 
-  /* Popup on mobile */
   .custom-popup {
     width: 95%;
     max-height: 85vh;
@@ -1271,20 +1051,11 @@
     gap: 12px;
   }
 
-  .custom-popup__name {
-    font-size: 14px;
-  }
-
-  .custom-popup__price {
-    font-size: 14px;
-  }
-
-  .custom-popup__description {
-    font-size: 11px;
-  }
+  .custom-popup__name { font-size: 14px; }
+  .custom-popup__price { font-size: 14px; }
+  .custom-popup__description { font-size: 11px; }
 }
 
-/* Extra small mobile */
 @media screen and (max-width: 479px) {
   .custom-product-grid__grid {
     grid-template-columns: 1fr 1fr;

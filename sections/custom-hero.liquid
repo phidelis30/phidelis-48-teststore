@@ -1,13 +1,3 @@
-{% comment %}
-  ============================================================================
-  Section: Custom Hero
-  ============================================================================
-  Content (caption, heading, description, button) is managed via blocks.
-  Desktop: blocks at the same position are grouped and stack vertically.
-  Mobile:  CSS Grid + display:contents gives each block its own position
-           via per-element .ch__block-mobile--* classes.
-{% endcomment %}
-
 {{ 'custom-sections.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
@@ -18,7 +8,6 @@
   assign min_height_mobile = section.settings.min_height_mobile | default: 400
 -%}
 
-{%- comment -%} Scoped styles for dynamic customizer values {%- endcomment -%}
 <style>
   #CustomHero-{{ section.id }} {
     --ch-min-height: {{ min_height }}px;
@@ -28,7 +17,6 @@
   }
 </style>
 
-{%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 
 <section
@@ -38,7 +26,6 @@
   data-section-id="{{ section.id }}"
   data-section-type="custom-hero"
 >
-  {%- comment -%} Background image container {%- endcomment -%}
   <div class="ch__media">
     {%- if section.settings.image != blank -%}
       <img
@@ -57,7 +44,6 @@
           {{ section.settings.image | image_url: width: 1920 }} 1920w
         "
       >
-      {%- comment -%} Mobile image (optional) {%- endcomment -%}
       {%- if section.settings.image_mobile != blank -%}
         <img
           class="ch__image ch__image--mobile"
@@ -74,17 +60,11 @@
       {{ 'lifestyle-1' | placeholder_svg_tag: 'ch__image ch__placeholder' }}
     {%- endif -%}
 
-    {%- comment -%} Optional dark overlay {%- endcomment -%}
     {%- if overlay_opacity > 0 -%}
       <div class="ch__overlay" aria-hidden="true"></div>
     {%- endif -%}
   </div>
 
-  {%- comment -%}
-    Desktop: blocks grouped by position stack vertically in one container.
-    Mobile:  each element carries its own .ch__block-mobile--* class so
-             CSS Grid + display:contents can position them independently.
-  {%- endcomment -%}
   {%- if section.blocks.size > 0 -%}
     {%- assign all_positions = 'top-left,top-center,top-right,center-left,center,center-right,bottom-left,bottom-center,bottom-right' | split: ',' -%}
 
@@ -100,7 +80,6 @@
       {%- if has_blocks -%}
         <div class="ch__content ch__content--{{ position }}">
           <div class="ch__content-inner">
-
             {%- for block in section.blocks -%}
               {%- assign block_pos = block.settings.content_position | default: 'bottom-left' -%}
               {%- if block_pos == position -%}
@@ -139,7 +118,6 @@
                 {%- endcase -%}
               {%- endif -%}
             {%- endfor -%}
-
           </div>
         </div>
       {%- endif -%}
