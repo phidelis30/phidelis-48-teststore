@@ -663,7 +663,7 @@
 .custom-popup {
   background: var(--custom-color-white);
   border-radius: 0;
-  max-width: 400px;
+  max-width: 380px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
@@ -717,8 +717,9 @@
 
 /* Product image in top row */
 .custom-popup__image-wrapper {
-  flex: 0 0 30%;
-  max-width: 30%;
+  flex: 0 0 50%;
+  width: 50%;
+  aspect-ratio: 1 / 1;
 }
 
 .custom-popup__image {
