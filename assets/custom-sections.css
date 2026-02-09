@@ -762,10 +762,10 @@
 }
 
 .custom-popup__variant-label {
-  font-size: 12px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
   margin-bottom: 10px;
   color: var(--custom-color-black);
   display: block;
@@ -778,9 +778,10 @@
   gap: 8px;
 }
 
-/* Color options: stacked full-width layout */
+/* Color options: 2-column side-by-side grid per design */
 .custom-popup__variant-options--color {
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 10px;
 }
 
@@ -879,12 +880,12 @@
   position: absolute;
   right: 16px;
   top: 50%;
-  transform: translateY(-50%);
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 6px solid var(--custom-color-black);
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  border-bottom: 2px solid var(--custom-color-black);
+  border-right: 2px solid var(--custom-color-black);
+  margin-top: -3px;
   pointer-events: none;
 }
 
@@ -909,14 +910,13 @@
   border-color: var(--custom-color-black);
 }
 
-/* Add to Cart button — matches hero CTA button style (.ch__btn--primary) */
+/* Add to Cart button — hero style, text left + long arrow right */
 .custom-popup__add-to-cart {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-between;
   width: 100%;
-  padding: 8px 20px;
+  padding: 14px 24px;
   background: var(--color-primary-button-background, var(--custom-color-black));
   color: var(--color-primary-button-text, var(--custom-color-white));
   border: 2px solid var(--color-primary-button-border, var(--custom-color-black));
@@ -941,16 +941,37 @@
   transform: scale(0.98);
 }
 
-/* ATC button text */
+/* ATC button text (left side) */
 .custom-popup__atc-text {
   pointer-events: none;
 }
 
-/* ATC arrow icon — same as hero .ch__btn-arrow */
+/* ATC long arrow icon (right side) — line + arrowhead via CSS */
 .custom-popup__atc-arrow {
-  font-size: 16px;
-  transition: transform var(--custom-transition-speed) ease;
+  display: inline-flex;
+  align-items: center;
   pointer-events: none;
+  transition: transform var(--custom-transition-speed) ease;
+}
+
+/* Long arrow: horizontal line + arrowhead */
+.custom-popup__atc-arrow::before {
+  content: '';
+  display: inline-block;
+  width: 40px;
+  height: 1.5px;
+  background: currentColor;
+  margin-right: -2px;
+}
+
+.custom-popup__atc-arrow::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
 }
 
 .custom-popup__add-to-cart:hover .custom-popup__atc-arrow {

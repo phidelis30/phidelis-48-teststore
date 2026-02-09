@@ -86,7 +86,7 @@
           disabled
         >
           <span class="custom-popup__atc-text">ADD TO CART</span>
-          <span class="custom-popup__atc-arrow">&rarr;</span>
+          <span class="custom-popup__atc-arrow"></span>
         </button>
       </div>
     </div>
@@ -201,7 +201,7 @@
       /* Reset button and messages */
       addToCartBtn.disabled = true;
       addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
-      addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow">&rarr;</span>';
+      addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow"></span>';
       successMsg.classList.remove('custom-popup__success-message--visible');
 
       /* Show overlay with animation */
@@ -499,7 +499,7 @@
 
         /* Reset button text after 2 seconds */
         setTimeout(function() {
-          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow">&rarr;</span>';
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow"></span>';
           addToCartBtn.disabled = false;
         }, 2000);
       })
@@ -511,7 +511,7 @@
 
         /* Reset error text after 2 seconds */
         setTimeout(function() {
-          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow">&rarr;</span>';
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow"></span>';
         }, 2000);
       });
     }
