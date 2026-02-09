@@ -382,22 +382,30 @@
 
 /* --------------------------------------------------------------------------
    3a-mobile. Per-block mobile positioning via Flex column + display:contents
-   On mobile the hero becomes a flex column. The desktop group wrappers
-   (.ch__content / .ch__content-inner) use display:contents so each block
-   element becomes an independent flex item. Blocks stack vertically (no
-   overlap). Position classes control ORDER (vertical zone) and ALIGN-SELF
-   (horizontal alignment).
+   On mobile the hero becomes a flex column. Two invisible spacers (::before
+   order 2, ::after order 4) with flex:1 absorb free space, creating three
+   spatial zones:  top (order 1) | spacer | center (order 3) | spacer | bottom (order 5).
+   Blocks stack vertically within each zone (no overlap).
    -------------------------------------------------------------------------- */
 @media screen and (max-width: 749px) {
-  /* Hero becomes a flex column on mobile — items stack at the bottom */
+  /* Hero becomes a flex column on mobile */
   .ch {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     gap: 8px;
     min-height: var(--ch-min-height-mobile, 400px);
     padding: 24px;
   }
+
+  /* Flexible spacers create the 3 vertical zones */
+  .ch::before,
+  .ch::after {
+    content: '';
+    flex: 1 1 0;
+    min-height: 0;
+  }
+  .ch::before { order: 2; }
+  .ch::after  { order: 4; }
 
   /* Background image positioned absolutely behind the flex items */
   .ch .ch__media {
@@ -422,23 +430,21 @@
   }
 
   /* ---- Per-block mobile position classes ---- */
-  /* Order controls vertical zone: top (-1) → center (0) → bottom (1) */
-  /* align-self controls horizontal alignment in the flex cross-axis */
 
-  /* Top zone (items appear first in the stack) */
-  .ch__block-mobile--top-left      { order: -1; align-self: flex-start; text-align: left; }
-  .ch__block-mobile--top-center    { order: -1; align-self: center;     text-align: center; }
-  .ch__block-mobile--top-right     { order: -1; align-self: flex-end;   text-align: right; }
+  /* Top zone (order 1 — before ::before spacer) */
+  .ch__block-mobile--top-left      { order: 1; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--top-center    { order: 1; align-self: center;     text-align: center; }
+  .ch__block-mobile--top-right     { order: 1; align-self: flex-end;   text-align: right; }
 
-  /* Center zone */
-  .ch__block-mobile--center-left   { order: 0; align-self: flex-start; text-align: left; }
-  .ch__block-mobile--center        { order: 0; align-self: center;     text-align: center; }
-  .ch__block-mobile--center-right  { order: 0; align-self: flex-end;   text-align: right; }
+  /* Center zone (order 3 — between the two spacers) */
+  .ch__block-mobile--center-left   { order: 3; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--center        { order: 3; align-self: center;     text-align: center; }
+  .ch__block-mobile--center-right  { order: 3; align-self: flex-end;   text-align: right; }
 
-  /* Bottom zone (items appear last in the stack) */
-  .ch__block-mobile--bottom-left   { order: 1; align-self: flex-start; text-align: left; }
-  .ch__block-mobile--bottom-center { order: 1; align-self: center;     text-align: center; }
-  .ch__block-mobile--bottom-right  { order: 1; align-self: flex-end;   text-align: right; }
+  /* Bottom zone (order 5 — after ::after spacer) */
+  .ch__block-mobile--bottom-left   { order: 5; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--bottom-center { order: 5; align-self: center;     text-align: center; }
+  .ch__block-mobile--bottom-right  { order: 5; align-self: flex-end;   text-align: right; }
 }
 
 /* --------------------------------------------------------------------------
