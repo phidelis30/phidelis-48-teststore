@@ -833,11 +833,11 @@
   gap: 8px;
 }
 
-/* Color options: 2-column side-by-side grid per design — no gap for divided-box look */
+/* Color options: 2-column grid layout */
 .custom-popup__variant-options--color {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
+  gap: 8px;
 }
 
 /* Individual variant option button (generic) */
@@ -872,19 +872,42 @@
 }
 
 /* --------------------------------------------------------------------------
-   Color buttons — plain text in 2-column grid with colored left-border accent
+   Color variant — div wrapper with color swatch (10%) + button (90%)
    -------------------------------------------------------------------------- */
-.custom-popup__color-btn {
-  padding: 14px 16px;
+
+/* Wrapper div: flex row, border around the whole item */
+.custom-popup__color-item {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
   border: 1px solid var(--custom-color-border);
-  border-left-width: 5px;
-  border-left-style: solid;
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--custom-transition-speed) ease;
+}
+
+.custom-popup__color-item:hover {
+  border-color: var(--custom-color-black);
+}
+
+/* Color swatch span: 10% width, shows the actual color */
+.custom-popup__color-swatch {
+  flex: 0 0 10%;
+  width: 10%;
+  border-right: 1px solid var(--custom-color-black);
+}
+
+/* Button: 90% width, shows color name text */
+.custom-popup__color-btn {
+  flex: 1;
+  padding: 14px 16px;
+  border: none;
   border-radius: 0;
   background: var(--custom-color-white);
   cursor: pointer;
   transition: background var(--custom-transition-speed) ease,
-              color var(--custom-transition-speed) ease,
-              border-color var(--custom-transition-speed) ease;
+              color var(--custom-transition-speed) ease;
   text-transform: none;
   letter-spacing: 0;
   font-family: var(--font-body--family);
@@ -894,28 +917,14 @@
   color: var(--custom-color-black);
 }
 
-/* Collapse shared borders between adjacent grid cells */
-.custom-popup__color-btn:nth-child(2n) {
-  border-left-width: 5px;
-  margin-left: -1px;
+/* Selected state: button bg black, text white */
+.custom-popup__color-item.custom-popup__variant-option--selected {
+  border-color: var(--custom-color-black);
 }
 
-.custom-popup__color-btn:hover {
-  border-top-color: var(--custom-color-black);
-  border-right-color: var(--custom-color-black);
-  border-bottom-color: var(--custom-color-black);
-  z-index: 1;
-}
-
-/* Selected color button: dark outline, keep colored left border */
-.custom-popup__color-btn.custom-popup__variant-option--selected {
-  border-top-color: var(--custom-color-black);
-  border-right-color: var(--custom-color-black);
-  border-bottom-color: var(--custom-color-black);
-  background: var(--custom-color-white);
-  color: var(--custom-color-black);
-  font-weight: 500;
-  z-index: 1;
+.custom-popup__color-item.custom-popup__variant-option--selected .custom-popup__color-btn {
+  background: var(--custom-color-black);
+  color: var(--custom-color-white);
 }
 
 /* --------------------------------------------------------------------------
