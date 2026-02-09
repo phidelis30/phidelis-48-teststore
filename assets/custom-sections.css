@@ -805,6 +805,26 @@
   text-decoration: line-through;
 }
 
+/* Variant select dropdown (used for Size option) */
+.custom-popup__variant-select {
+  width: 100%;
+  padding: 10px 16px;
+  border: 1px solid var(--custom-color-border);
+  border-radius: 6px;
+  background: var(--custom-color-white);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--custom-color-black);
+  cursor: pointer;
+  appearance: auto;
+  transition: border-color var(--custom-transition-speed) ease;
+}
+
+.custom-popup__variant-select:focus {
+  outline: none;
+  border-color: var(--custom-color-black);
+}
+
 /* Add to Cart button in popup */
 .custom-popup__add-to-cart {
   width: 100%;

@@ -292,27 +292,58 @@
         label.textContent = option.name;
         group.appendChild(label);
 
-        /* Container for option value buttons */
-        var optionsContainer = document.createElement('div');
-        optionsContainer.className = 'custom-popup__variant-options';
+        var optionNameLower = option.name.toLowerCase();
 
-        option.values.forEach(function(value) {
-          var btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'custom-popup__variant-option';
-          btn.textContent = value;
-          btn.setAttribute('data-option-name', option.name);
-          btn.setAttribute('data-option-value', value);
+        /* Size option: render as a dropdown select */
+        if (optionNameLower === 'size') {
+          var select = document.createElement('select');
+          select.className = 'custom-popup__variant-select';
+          select.setAttribute('data-option-name', option.name);
 
-          /* Click handler: select this variant option */
-          btn.addEventListener('click', function() {
-            selectOption(option.name, value, optionsContainer);
+          /* Placeholder option */
+          var placeholder = document.createElement('option');
+          placeholder.value = '';
+          placeholder.textContent = 'Choose your ' + optionNameLower;
+          placeholder.disabled = true;
+          placeholder.selected = true;
+          select.appendChild(placeholder);
+
+          option.values.forEach(function(value) {
+            var opt = document.createElement('option');
+            opt.value = value;
+            opt.textContent = value;
+            select.appendChild(opt);
           });
 
-          optionsContainer.appendChild(btn);
-        });
+          select.addEventListener('change', function() {
+            selectOption(option.name, this.value, group);
+          });
 
-        group.appendChild(optionsContainer);
+          group.appendChild(select);
+        } else {
+          /* Other options (Color, etc.): render as buttons */
+          var optionsContainer = document.createElement('div');
+          optionsContainer.className = 'custom-popup__variant-options';
+
+          option.values.forEach(function(value) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'custom-popup__variant-option';
+            btn.textContent = value;
+            btn.setAttribute('data-option-name', option.name);
+            btn.setAttribute('data-option-value', value);
+
+            /* Click handler: select this variant option */
+            btn.addEventListener('click', function() {
+              selectOption(option.name, value, optionsContainer);
+            });
+
+            optionsContainer.appendChild(btn);
+          });
+
+          group.appendChild(optionsContainer);
+        }
+
         popupVariants.appendChild(group);
       });
     }
