@@ -3,8 +3,8 @@
   Section: Custom Hero
   ============================================================================
   Content (caption, heading, description, button) is managed via blocks.
-  Each block has its own Content Position setting (9-point grid).
-  Blocks at the same position are grouped and stack vertically.
+  Each block has its own Content Position setting (9-point grid) for both
+  desktop and mobile, allowing fully independent positioning per block.
 {% endcomment %}
 
 {{ 'custom-sections.css' | asset_url | stylesheet_tag }}
@@ -80,70 +80,51 @@
   </div>
 
   {%- comment -%}
-    Render blocks grouped by position.
-    Blocks sharing the same position stack vertically in one container.
+    Render each block in its own positioned wrapper so every block
+    (caption, heading, description, button) can be independently
+    positioned on both desktop and mobile.
   {%- endcomment -%}
   {%- if section.blocks.size > 0 -%}
-    {%- assign all_positions = 'top-left,top-center,top-right,center-left,center,center-right,bottom-left,bottom-center,bottom-right' | split: ',' -%}
+    {%- for block in section.blocks -%}
+      {%- assign block_pos = block.settings.content_position | default: 'bottom-left' -%}
+      {%- assign block_mobile_pos = block.settings.content_position_mobile | default: block_pos -%}
 
-    {%- for position in all_positions -%}
-      {%- assign has_blocks = false -%}
-      {%- assign group_mobile_pos = position -%}
-      {%- for block in section.blocks -%}
-        {%- assign block_pos = block.settings.content_position | default: 'bottom-left' -%}
-        {%- if block_pos == position -%}
-          {%- unless has_blocks -%}
-            {%- assign group_mobile_pos = block.settings.content_position_mobile | default: position -%}
-          {%- endunless -%}
-          {%- assign has_blocks = true -%}
-        {%- endif -%}
-      {%- endfor -%}
+      <div class="ch__content ch__content--{{ block_pos }} ch__content-mobile--{{ block_mobile_pos }}">
+        <div class="ch__content-inner">
+          {%- case block.type -%}
 
-      {%- if has_blocks -%}
-        <div class="ch__content ch__content--{{ position }} ch__content-mobile--{{ group_mobile_pos }}">
-          <div class="ch__content-inner">
-
-            {%- for block in section.blocks -%}
-              {%- assign block_pos = block.settings.content_position | default: 'bottom-left' -%}
-              {%- if block_pos == position -%}
-                {%- case block.type -%}
-
-                  {%- when 'caption' -%}
-                    {%- if block.settings.text != blank -%}
-                      <p class="ch__subtitle" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
-                    {%- endif -%}
-
-                  {%- when 'heading' -%}
-                    {%- if block.settings.text != blank -%}
-                      <h2 class="ch__heading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
-                    {%- endif -%}
-
-                  {%- when 'description' -%}
-                    {%- if block.settings.text != blank -%}
-                      <p class="ch__description" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
-                    {%- endif -%}
-
-                  {%- when 'button' -%}
-                    {%- if block.settings.label != blank -%}
-                      {%- assign btn_style = block.settings.style | default: 'primary' -%}
-                      <a
-                        href="{{ block.settings.link }}"
-                        class="ch__btn ch__btn--{{ btn_style }}"
-                        aria-label="{{ block.settings.label | escape }}"
-                        {{ block.shopify_attributes }}
-                      >
-                        <span>{{ block.settings.label }}</span>
-                        <span class="ch__btn-arrow" aria-hidden="true">&rarr;</span>
-                      </a>
-                    {%- endif -%}
-
-                {%- endcase -%}
+            {%- when 'caption' -%}
+              {%- if block.settings.text != blank -%}
+                <p class="ch__subtitle" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
               {%- endif -%}
-            {%- endfor -%}
 
-          </div>
+            {%- when 'heading' -%}
+              {%- if block.settings.text != blank -%}
+                <h2 class="ch__heading" {{ block.shopify_attributes }}>{{ block.settings.text }}</h2>
+              {%- endif -%}
+
+            {%- when 'description' -%}
+              {%- if block.settings.text != blank -%}
+                <p class="ch__description" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+              {%- endif -%}
+
+            {%- when 'button' -%}
+              {%- if block.settings.label != blank -%}
+                {%- assign btn_style = block.settings.style | default: 'primary' -%}
+                <a
+                  href="{{ block.settings.link }}"
+                  class="ch__btn ch__btn--{{ btn_style }}"
+                  aria-label="{{ block.settings.label | escape }}"
+                  {{ block.shopify_attributes }}
+                >
+                  <span>{{ block.settings.label }}</span>
+                  <span class="ch__btn-arrow" aria-hidden="true">&rarr;</span>
+                </a>
+              {%- endif -%}
+
+          {%- endcase -%}
         </div>
-      {%- endif -%}
+      </div>
     {%- endfor -%}
   {%- endif -%}
 </section>

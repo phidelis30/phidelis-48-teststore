@@ -290,7 +290,7 @@
 }
 
 /* Content overlay: absolutely positioned over the image */
-/* Multiple containers may exist (one per position group) */
+/* Each block gets its own wrapper for independent positioning */
 .ch__content {
   position: absolute;
   inset: 0;
