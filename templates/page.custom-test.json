@@ -135,7 +135,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "floral-white-top",
-            "hotspot_position": "center",
+            "hotspot_position": "top-center",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -154,7 +154,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "dark-denim-top",
-            "hotspot_position": "center",
+            "hotspot_position": "center-right",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -192,7 +192,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "chequered-red-shirt",
-            "hotspot_position": "center",
+            "hotspot_position": "center-left",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -211,7 +211,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "blue-silk-tuxedo",
-            "hotspot_position": "center",
+            "hotspot_position": "bottom-right",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -230,7 +230,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "black-leather-bag",
-            "hotspot_position": "center",
+            "hotspot_position": "top-center",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
