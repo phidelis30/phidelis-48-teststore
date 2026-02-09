@@ -290,7 +290,7 @@
 }
 
 /* Content overlay: absolutely positioned over the image */
-/* Each block gets its own wrapper for independent positioning */
+/* Desktop: one wrapper per position group. Mobile: display:contents (see 3a-mobile) */
 .ch__content {
   position: absolute;
   inset: 0;
@@ -381,56 +381,64 @@
 }
 
 /* --------------------------------------------------------------------------
-   3a-mobile. Per-block mobile positioning via CSS Grid + display:contents
-   On mobile the hero becomes a 3×3 grid. The desktop group wrappers
+   3a-mobile. Per-block mobile positioning via Flex column + display:contents
+   On mobile the hero becomes a flex column. The desktop group wrappers
    (.ch__content / .ch__content-inner) use display:contents so each block
-   element becomes an independent grid item placed by .ch__block-mobile--*.
+   element becomes an independent flex item. Blocks stack vertically (no
+   overlap). Position classes control ORDER (vertical zone) and ALIGN-SELF
+   (horizontal alignment).
    -------------------------------------------------------------------------- */
 @media screen and (max-width: 749px) {
-  /* Hero becomes a 3×3 grid on mobile */
+  /* Hero becomes a flex column on mobile — items stack at the bottom */
   .ch {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 8px;
+    min-height: var(--ch-min-height-mobile, 400px);
+    padding: 24px;
   }
 
-  /* Background image spans the full grid */
+  /* Background image positioned absolutely behind the flex items */
   .ch .ch__media {
-    grid-column: 1 / -1;
-    grid-row: 1 / -1;
+    position: absolute;
+    inset: 0;
   }
 
-  /* Desktop group wrappers become invisible — children promoted to grid items */
+  /* Desktop group wrappers become invisible — children promoted to flex items */
   .ch .ch__content,
   .ch .ch__content-inner {
     display: contents;
   }
 
-  /* Block elements as grid items: appear above background, clickable */
+  /* Block elements as flex items: above background, clickable */
   .ch .ch__subtitle,
   .ch .ch__heading,
   .ch .ch__description,
   .ch .ch__btn {
     z-index: 1;
     pointer-events: auto;
+    position: relative;
   }
 
-  /* ---- Per-block mobile position classes (9-point grid) ---- */
+  /* ---- Per-block mobile position classes ---- */
+  /* Order controls vertical zone: top (-1) → center (0) → bottom (1) */
+  /* align-self controls horizontal alignment in the flex cross-axis */
 
-  /* Top row */
-  .ch__block-mobile--top-left      { grid-column: 1; grid-row: 1; align-self: start;  justify-self: start;  text-align: left; }
-  .ch__block-mobile--top-center    { grid-column: 2; grid-row: 1; align-self: start;  justify-self: center; text-align: center; }
-  .ch__block-mobile--top-right     { grid-column: 3; grid-row: 1; align-self: start;  justify-self: end;    text-align: right; }
+  /* Top zone (items appear first in the stack) */
+  .ch__block-mobile--top-left      { order: -1; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--top-center    { order: -1; align-self: center;     text-align: center; }
+  .ch__block-mobile--top-right     { order: -1; align-self: flex-end;   text-align: right; }
 
-  /* Center row */
-  .ch__block-mobile--center-left   { grid-column: 1; grid-row: 2; align-self: center; justify-self: start;  text-align: left; }
-  .ch__block-mobile--center        { grid-column: 2; grid-row: 2; align-self: center; justify-self: center; text-align: center; }
-  .ch__block-mobile--center-right  { grid-column: 3; grid-row: 2; align-self: center; justify-self: end;    text-align: right; }
+  /* Center zone */
+  .ch__block-mobile--center-left   { order: 0; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--center        { order: 0; align-self: center;     text-align: center; }
+  .ch__block-mobile--center-right  { order: 0; align-self: flex-end;   text-align: right; }
 
-  /* Bottom row */
-  .ch__block-mobile--bottom-left   { grid-column: 1; grid-row: 3; align-self: end;    justify-self: start;  text-align: left; }
-  .ch__block-mobile--bottom-center { grid-column: 2; grid-row: 3; align-self: end;    justify-self: center; text-align: center; }
-  .ch__block-mobile--bottom-right  { grid-column: 3; grid-row: 3; align-self: end;    justify-self: end;    text-align: right; }
+  /* Bottom zone (items appear last in the stack) */
+  .ch__block-mobile--bottom-left   { order: 1; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--bottom-center { order: 1; align-self: center;     text-align: center; }
+  .ch__block-mobile--bottom-right  { order: 1; align-self: flex-end;   text-align: right; }
 }
 
 /* --------------------------------------------------------------------------
