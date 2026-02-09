@@ -135,6 +135,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "floral-white-top",
+            "hotspot_position": "top-center",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -153,6 +154,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "dark-denim-top",
+            "hotspot_position": "center-right",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -171,6 +173,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "classic-leather-jacket",
+            "hotspot_position": "center",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -189,6 +192,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "chequered-red-shirt",
+            "hotspot_position": "center-left",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -207,6 +211,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "blue-silk-tuxedo",
+            "hotspot_position": "bottom-right",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -225,6 +230,7 @@
           "name": "Custom Product Card",
           "settings": {
             "product": "black-leather-bag",
+            "hotspot_position": "top-center",
             "inherit_color_scheme": true,
             "color_scheme": "",
             "border": "none",
@@ -258,7 +264,7 @@
         "show_card_description": false,
         "card_click_action": "popup",
         "button_text": "ADD TO CART",
-        "heading": "Featured Products",
+        "heading": "Tisso vison in the wild",
         "heading_alignment": "left",
         "heading_size": 24,
         "padding-block-start": 20,
