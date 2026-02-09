@@ -74,16 +74,18 @@
       </button>
     </div>
 
-    {%- comment -%} Product title and price (hidden by default via CSS, available for SEO) {%- endcomment -%}
+    {%- comment -%} Product title, price, description (visibility controlled by section CSS classes) {%- endcomment -%}
     <div class="custom-product-grid__info">
       <h3 class="custom-product-grid__title">{{ product.title }}</h3>
       <p class="custom-product-grid__price">{{ product.price | money }}</p>
+      <p class="custom-product-grid__description">{{ product.description | strip_html | truncate: 100 }}</p>
     </div>
 
     {%- comment -%} Embedded product data for popup JS (hidden script, no visual impact) {%- endcomment -%}
     <script type="application/json" class="cpg-product-data">
       {
         "handle": {{ product.handle | json }},
+        "url": {{ product.url | json }},
         "id": {{ product.id }},
         "title": {{ product.title | json }},
         "description": {{ product.description | strip_html | truncate: 300 | json }},

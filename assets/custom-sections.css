@@ -624,10 +624,48 @@
   color: var(--custom-color-black);
 }
 
-/* Product info below image — hidden per design (details shown in popup) */
+/* Product info below image — hidden by default, toggled via section modifier classes */
 .custom-product-grid__info {
   display: none;
+  padding: 8px 0 0;
 }
+
+/* Show info container when any card display setting is active */
+.custom-product-grid--show-title .custom-product-grid__info,
+.custom-product-grid--show-price .custom-product-grid__info,
+.custom-product-grid--show-description .custom-product-grid__info {
+  display: block;
+}
+
+/* Individual card elements: hidden by default, shown by section class */
+.custom-product-grid__title {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--color-foreground);
+  display: none;
+}
+
+.custom-product-grid__price {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0 0;
+  color: var(--color-foreground);
+  display: none;
+}
+
+.custom-product-grid__description {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  color: var(--color-foreground);
+  opacity: 0.7;
+  display: none;
+}
+
+.custom-product-grid--show-title .custom-product-grid__title { display: block; }
+.custom-product-grid--show-price .custom-product-grid__price { display: block; }
+.custom-product-grid--show-description .custom-product-grid__description { display: block; }
 
 /* ==========================================================================
    5. PRODUCT POPUP / MODAL

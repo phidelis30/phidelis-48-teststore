@@ -7,6 +7,11 @@
   assign heading_size = section.settings.heading_size | default: 20
   assign heading_alignment = section.settings.heading_alignment | default: 'left'
   assign products_to_show = section.settings.products_to_show | default: 6
+  assign show_title = section.settings.show_card_title
+  assign show_price = section.settings.show_card_price
+  assign show_description = section.settings.show_card_description
+  assign card_click_action = section.settings.card_click_action | default: 'popup'
+  assign button_text = section.settings.button_text | default: 'ADD TO CART'
 -%}
 
 {%- comment -%} Scoped styles for dynamic customizer values {%- endcomment -%}
@@ -26,10 +31,12 @@
 
 <section
   id="ProductGrid-{{ section.id }}"
-  class="custom-product-grid section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style"
+  class="custom-product-grid section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style{% if show_title %} custom-product-grid--show-title{% endif %}{% if show_price %} custom-product-grid--show-price{% endif %}{% if show_description %} custom-product-grid--show-description{% endif %}"
   style="{% render 'spacing-padding', settings: section.settings %}"
   data-section-id="{{ section.id }}"
   data-section-type="custom-product-grid"
+  data-card-click-action="{{ card_click_action }}"
+  data-button-text="{{ button_text | escape }}"
 >
 
   {%- comment -%} Section heading {%- endcomment -%}
@@ -133,6 +140,9 @@
        CONFIGURATION & DOM REFERENCES
        ------------------------------------------------------------------ */
     var sectionId = '{{ section.id }}';
+    var sectionEl = document.getElementById('ProductGrid-' + sectionId);
+    var cardClickAction = sectionEl.getAttribute('data-card-click-action') || 'popup';
+    var buttonText = sectionEl.getAttribute('data-button-text') || 'ADD TO CART';
     var overlay = document.getElementById('CustomPopupOverlay-' + sectionId);
     var popup = overlay.querySelector('.custom-popup');
     var closeBtn = overlay.querySelector('.custom-popup__close');
@@ -200,10 +210,10 @@
       /* Build variant option groups dynamically */
       renderVariants(product);
 
-      /* Reset button and messages */
+      /* Reset button and messages — use custom button text from settings */
       addToCartBtn.disabled = true;
       addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
-      addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow"></span>';
+      addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">' + buttonText + '</span><span class="custom-popup__atc-arrow"></span>';
       successMsg.classList.remove('custom-popup__success-message--visible');
 
       /* Show overlay with animation */
@@ -502,7 +512,7 @@
 
         /* Reset button text after 2 seconds */
         setTimeout(function() {
-          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow"></span>';
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">' + buttonText + '</span><span class="custom-popup__atc-arrow"></span>';
           addToCartBtn.disabled = false;
         }, 2000);
       })
@@ -514,7 +524,7 @@
 
         /* Reset error text after 2 seconds */
         setTimeout(function() {
-          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow"></span>';
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">' + buttonText + '</span><span class="custom-popup__atc-arrow"></span>';
         }, 2000);
       });
     }
@@ -543,25 +553,61 @@
     }
 
     /* ------------------------------------------------------------------
+       CARD CLICK ACTION HANDLER
+       Supports three modes based on the card_click_action setting:
+       - "popup": opens product popup (default)
+       - "product_page": navigates to the product detail page
+       - "add_to_cart": adds the first available variant directly to cart
+       ------------------------------------------------------------------ */
+    function handleCardAction(handle) {
+      var product = productData[handle];
+      if (!product) return;
+
+      if (cardClickAction === 'product_page') {
+        /* Navigate to the product detail page */
+        window.location.href = product.url || '/products/' + handle;
+
+      } else if (cardClickAction === 'add_to_cart') {
+        /* Quick add: add first available variant directly to cart */
+        var variant = product.variants.find(function(v) { return v.available; });
+        if (!variant) return;
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: [{ id: variant.id, quantity: 1 }] })
+        })
+        .then(function(response) { return response.json(); })
+        .then(function() { updateCartCount(); })
+        .catch(function(error) {
+          console.error('Custom Product Grid: Quick add to cart failed', error);
+        });
+
+      } else {
+        /* Default: open popup */
+        openPopup(handle);
+      }
+    }
+
+    /* ------------------------------------------------------------------
        EVENT LISTENERS — uses event delegation on the section container
        so clicks work even if cards are rendered dynamically.
        ------------------------------------------------------------------ */
-    var sectionEl = document.getElementById('ProductGrid-' + sectionId);
 
-    /* Delegated click: hotspot or card opens popup */
+    /* Delegated click: hotspot or card triggers the configured action */
     sectionEl.addEventListener('click', function(e) {
       /* Check for hotspot click first (more specific) */
       var hotspot = e.target.closest('[data-popup-trigger]');
       if (hotspot) {
         e.stopPropagation();
-        openPopup(hotspot.getAttribute('data-popup-trigger'));
+        handleCardAction(hotspot.getAttribute('data-popup-trigger'));
         return;
       }
 
       /* Check for card click (entire card is clickable) */
       var card = e.target.closest('.custom-product-grid__card');
       if (card) {
-        openPopup(card.getAttribute('data-product-handle'));
+        handleCardAction(card.getAttribute('data-product-handle'));
         return;
       }
     });
@@ -662,6 +708,58 @@
       "max": 12,
       "step": 1,
       "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Card display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_title",
+      "label": "Show title",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_price",
+      "label": "Show price",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_description",
+      "label": "Show description",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Card action"
+    },
+    {
+      "type": "select",
+      "id": "card_click_action",
+      "label": "Click action",
+      "options": [
+        {
+          "value": "popup",
+          "label": "View popup"
+        },
+        {
+          "value": "product_page",
+          "label": "View product detail"
+        },
+        {
+          "value": "add_to_cart",
+          "label": "Add to cart"
+        }
+      ],
+      "default": "popup"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "ADD TO CART"
     },
     {
       "type": "header",
