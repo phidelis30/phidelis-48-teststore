@@ -1,355 +1,1258 @@
-{{ 'custom-sections.css' | asset_url | stylesheet_tag }}
+/* ==========================================================================
+   Custom Sections Stylesheet
+   Covers: Banner Section , Hero Section, (Announcement Bar) & Product Grid Section (with Popup)
+   Author: Ecomexperts Test
+   ========================================================================== */
 
-{%- liquid
-  assign section_width = section.settings.section_width | default: 'full-width'
-  assign columns = section.settings.columns | default: 3
-  assign columns_mobile = section.settings.columns_mobile | default: 2
-  assign heading_size = section.settings.heading_size | default: 20
-  assign heading_alignment = section.settings.heading_alignment | default: 'left'
-  assign products_to_show = section.settings.products_to_show | default: 6
-  assign show_title = section.settings.show_card_title
-  assign show_price = section.settings.show_card_price
-  assign show_description = section.settings.show_card_description
-  assign card_click_action = section.settings.card_click_action | default: 'popup'
-  assign button_text = section.settings.button_text | default: 'ADD TO CART'
-  assign grid_parent_id = 'ProductGrid-' | append: section.id
--%}
+/* --------------------------------------------------------------------------
+   1. CSS CUSTOM PROPERTIES (shared)
+   -------------------------------------------------------------------------- */
+:root {
+  --custom-font-primary: 'Inter', sans-serif;
+  --custom-color-white: #ffffff;
+  --custom-color-black: #000000;
+  --custom-color-dark: #1a1a1a;
+  --custom-color-gray: #666666;
+  --custom-color-light-gray: #f5f5f5;
+  --custom-color-border: #e0e0e0;
+  --custom-transition-speed: 0.3s;
+  --custom-grid-gap: 20px;
+  --custom-popup-z-index: 9999;
+  --custom-section-max-width: 1200px;
+}
 
-{%- comment -%} Scoped styles for dynamic customizer values {%- endcomment -%}
-<style>
-  #ProductGrid-{{ section.id }} {
-    --cpg-columns: {{ columns }};
-    --cpg-columns-mobile: {{ columns_mobile }};
-    --cpg-heading-size: {{ heading_size }}px;
-    --cpg-heading-align: {{ heading_alignment }};
+/* ==========================================================================
+   2. CUSTOM BANNER — Announcement Bar
+   ==========================================================================
+   Desktop: Horizontal bar — Logo (left) | Promo text (center) | CTA (right)
+   Mobile:  Logo centered + hamburger toggle → expands to full panel
+   ========================================================================== */
+
+/* Section container: inherits colors from color-{{ scheme }} class */
+.cb {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  border-bottom: 1px solid var(--color-border, var(--custom-color-border));
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   2a. DESKTOP BAR
+   -------------------------------------------------------------------------- */
+
+/* Main horizontal bar: 3-column flex layout */
+/* Padding is handled by the spacing-style class + spacing-padding snippet */
+.cb__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 24px;
+  gap: 16px;
+}
+
+/* Logo container: links to home page, no underline */
+.cb__logo {
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Logo as text: bold uppercase brand name — inherits color from color scheme */
+.cb__logo-text {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-foreground-heading, currentColor);
+  white-space: nowrap;
+}
+
+/* Logo as image */
+.cb__logo-img {
+  display: block;
+  width: auto;
+  object-fit: contain;
+}
+
+/* Center promo text — inherits color from color scheme */
+.cb__promo-text {
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--color-foreground, currentColor);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* CTA button: yellow bg, black text, with arrow */
+.cb__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  background: var(--cb-btn-bg, #E8D44D);
+  color: var(--cb-btn-text, #000000);
+  border: 1px solid var(--cb-btn-border, #E8D44D);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--custom-transition-speed) ease,
+              color var(--custom-transition-speed) ease,
+              transform var(--custom-transition-speed) ease;
+  flex-shrink: 0;
+}
+
+/* Button arrow icon */
+.cb__btn-arrow {
+  font-size: 16px;
+  transition: transform var(--custom-transition-speed) ease;
+}
+
+/* Button hover animation: slight shift + color change */
+.cb__btn:hover {
+  background: var(--cb-btn-hover-bg, #d4c043);
+  color: var(--cb-btn-hover-text, #000000);
+}
+
+/* Arrow slides right on hover */
+.cb__btn:hover .cb__btn-arrow {
+  transform: translateX(4px);
+}
+
+/* Button active/press: remove lift */
+.cb__btn:active {
+  transform: scale(0.98);
+}
+
+/* Mobile toggle button: hidden on desktop */
+.cb__toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: var(--color-foreground, currentColor);
+  flex-shrink: 0;
+}
+
+/* Toggle icon states: show hamburger, hide close by default */
+.cb__toggle-open { display: block; }
+.cb__toggle-close { display: none; }
+
+/* When panel is open: swap icons */
+.cb--panel-open .cb__toggle-open { display: none; }
+.cb--panel-open .cb__toggle-close { display: block; }
+
+/* --------------------------------------------------------------------------
+   2b. MOBILE PANEL (hidden by default, slides down when toggled)
+   -------------------------------------------------------------------------- */
+
+/* Panel: slides down from the bar — inherits bg from color scheme */
+.cb__panel {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px 24px 32px;
+  border-top: 1px solid var(--color-border, var(--custom-color-border));
+}
+
+/* Panel promo text — inherits color from color scheme */
+.cb__panel-promo {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-foreground, currentColor);
+  text-align: center;
+  margin: 0;
+}
+
+/* Panel CTA button: full-width yellow button with arrow */
+.cb__panel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 24px;
+  background: var(--cb-btn-bg, #E8D44D);
+  color: var(--cb-btn-text, #000000);
+  border: 1px solid var(--cb-btn-border, #E8D44D);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--custom-transition-speed) ease,
+              color var(--custom-transition-speed) ease;
+}
+
+.cb__panel-btn:hover {
+  background: var(--cb-btn-hover-bg, #d4c043);
+  color: var(--cb-btn-hover-text, #000000);
+}
+
+.cb__panel-btn .cb__btn-arrow {
+  font-size: 16px;
+  transition: transform var(--custom-transition-speed) ease;
+}
+
+.cb__panel-btn:hover .cb__btn-arrow {
+  transform: translateX(4px);
+}
+
+/* --------------------------------------------------------------------------
+   2c. BANNER RESPONSIVE — Mobile breakpoint at 749px
+   -------------------------------------------------------------------------- */
+
+@media screen and (max-width: 749px) {
+  /* Bar: reduce horizontal padding on mobile */
+  .cb__bar {
+    padding-inline: 16px;
   }
 
-  /* Hide cards beyond the products_to_show limit */
-  #ProductGrid-{{ section.id }} .custom-product-grid__grid > .custom-product-grid__card:nth-child(n + {{ products_to_show | plus: 1 }}) {
+  /* Hide promo text and CTA button on mobile bar */
+  .cb__promo-text { display: none; }
+  .cb__btn { display: none; }
+
+  /* Show mobile toggle */
+  .cb__toggle { display: flex; }
+
+  /* Logo centered, toggle on the left via order */
+  .cb__toggle { order: -1; }
+  .cb__logo { flex: 1; text-align: center; }
+
+  /* Panel: visible when open */
+  .cb--panel-open .cb__panel {
+    display: flex;
+  }
+}
+
+/* ==========================================================================
+   3. CUSTOM HERO SECTION
+   ==========================================================================
+   Full-width hero with 100% background image and left-aligned text overlay.
+   Content position is configurable: top-left, top-right, center,
+   bottom-left (default), bottom-right.
+   ========================================================================== */
+
+/* Hero wrapper: relative container for image + overlay + content */
+.ch {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Media wrapper: holds the background image at 100% */
+.ch__media {
+  position: relative;
+  width: 100%;
+  min-height: var(--ch-min-height, 500px);
+}
+
+/* Background image: covers full area */
+.ch__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: var(--ch-min-height, 500px);
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Mobile image: hidden by default, shown on mobile */
+.ch__image--mobile {
+  display: none;
+}
+
+/* Placeholder SVG when no image uploaded */
+.ch__placeholder {
+  background: var(--color-background);
+}
+
+/* Optional dark overlay on the image */
+.ch__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, var(--ch-overlay-opacity, 0));
+  pointer-events: none;
+}
+
+/* Content overlay: absolutely positioned over the image */
+/* Desktop: one wrapper per position group. Mobile: display:contents (see 3a-mobile) */
+.ch__content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  padding: 40px;
+  pointer-events: none;
+}
+
+/* Content inner: constrains text width, re-enables click */
+.ch__content-inner {
+  max-width: var(--ch-content-width, 50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  pointer-events: auto;
+}
+
+/* --------------------------------------------------------------------------
+   3a. Content position modifiers (9-point grid)
+   --------------------------------------------------------------------------
+   flex-direction: row (default) →
+     justify-content = horizontal (left / center / right)
+     align-items     = vertical   (top  / center / bottom)
+   -------------------------------------------------------------------------- */
+
+/* Top row */
+.ch__content--top-left {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.ch__content--top-center {
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.ch__content--top-right {
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+/* Center row */
+.ch__content--center-left {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.ch__content--center {
+  justify-content: center;
+  align-items: center;
+}
+
+.ch__content--center-right {
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Bottom row */
+.ch__content--bottom-left {
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.ch__content--bottom-center {
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.ch__content--bottom-right {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+/* Center-column text alignment */
+.ch__content--top-center .ch__content-inner,
+.ch__content--center .ch__content-inner,
+.ch__content--bottom-center .ch__content-inner {
+  text-align: center;
+  align-items: center;
+}
+
+/* Right-column text alignment */
+.ch__content--top-right .ch__content-inner,
+.ch__content--center-right .ch__content-inner,
+.ch__content--bottom-right .ch__content-inner {
+  text-align: right;
+  align-items: flex-end;
+}
+
+/* --------------------------------------------------------------------------
+   3a-mobile. Per-block mobile positioning via Flex column + display:contents
+   On mobile the hero becomes a flex column. Two invisible spacers (::before
+   order 2, ::after order 4) with flex:1 absorb free space, creating three
+   spatial zones:  top (order 1) | spacer | center (order 3) | spacer | bottom (order 5).
+   Blocks stack vertically within each zone (no overlap).
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 749px) {
+  /* Hero becomes a flex column on mobile */
+  .ch {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: var(--ch-min-height-mobile, 400px);
+    padding: 24px;
+  }
+
+  /* Flexible spacers create the 3 vertical zones */
+  .ch::before,
+  .ch::after {
+    content: '';
+    flex: 1 1 0;
+    min-height: 0;
+  }
+  .ch::before { order: 2; }
+  .ch::after  { order: 4; }
+
+  /* Background image positioned absolutely behind the flex items */
+  .ch .ch__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Desktop group wrappers become invisible — children promoted to flex items */
+  .ch .ch__content,
+  .ch .ch__content-inner {
+    display: contents;
+  }
+
+  /* Block elements as flex items: above background, clickable */
+  .ch .ch__subtitle,
+  .ch .ch__heading,
+  .ch .ch__description,
+  .ch .ch__btn {
+    z-index: 1;
+    pointer-events: auto;
+    position: relative;
+  }
+
+  /* ---- Per-block mobile position classes ---- */
+
+  /* Top zone (order 1 — before ::before spacer) */
+  .ch__block-mobile--top-left      { order: 1; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--top-center    { order: 1; align-self: center;     text-align: center; }
+  .ch__block-mobile--top-right     { order: 1; align-self: flex-end;   text-align: right; }
+
+  /* Center zone (order 3 — between the two spacers) */
+  .ch__block-mobile--center-left   { order: 3; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--center        { order: 3; align-self: center;     text-align: center; }
+  .ch__block-mobile--center-right  { order: 3; align-self: flex-end;   text-align: right; }
+
+  /* Bottom zone (order 5 — after ::after spacer) */
+  .ch__block-mobile--bottom-left   { order: 5; align-self: flex-start; text-align: left; }
+  .ch__block-mobile--bottom-center { order: 5; align-self: center;     text-align: center; }
+  .ch__block-mobile--bottom-right  { order: 5; align-self: flex-end;   text-align: right; }
+}
+
+/* --------------------------------------------------------------------------
+   3b. Hero typography
+   -------------------------------------------------------------------------- */
+
+/* Subtitle / eyebrow */
+.ch__subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--color-foreground, currentColor);
+  opacity: 0.8;
+}
+
+/* Main heading */
+.ch__heading {
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+  color: var(--color-foreground-heading, currentColor);
+}
+
+/* Description text */
+.ch__description {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--color-foreground, currentColor);
+  max-width: 480px;
+}
+
+/* --------------------------------------------------------------------------
+   3c. Hero CTA button
+   -------------------------------------------------------------------------- */
+
+/* Base button styles */
+.ch__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--custom-transition-speed) ease;
+  margin-top: 8px;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+/* Primary: dark bg, white text */
+.ch__btn--primary {
+  background: var(--color-primary-button-background, var(--custom-color-black));
+  color: var(--color-primary-button-text, var(--custom-color-white));
+  border: 2px solid var(--color-primary-button-border, var(--custom-color-black));
+}
+
+.ch__btn--primary:hover {
+  background: var(--color-primary-button-hover-background, var(--custom-color-dark));
+  color: var(--color-primary-button-hover-text, var(--custom-color-white));
+  border-color: var(--color-primary-button-hover-border, var(--custom-color-dark));
+}
+
+/* Secondary: transparent bg, dark text */
+.ch__btn--secondary {
+  background: var(--color-secondary-button-background, transparent);
+  color: var(--color-secondary-button-text, var(--custom-color-black));
+  border: 2px solid var(--color-secondary-button-border, var(--custom-color-black));
+}
+
+.ch__btn--secondary:hover {
+  background: var(--color-secondary-button-hover-background, var(--custom-color-black));
+  color: var(--color-secondary-button-hover-text, var(--custom-color-white));
+  border-color: var(--color-secondary-button-hover-border, var(--custom-color-black));
+}
+
+/* Button arrow animation */
+.ch__btn-arrow {
+  font-size: 16px;
+  transition: transform var(--custom-transition-speed) ease;
+}
+
+.ch__btn:hover .ch__btn-arrow {
+  transform: translateX(4px);
+}
+
+.ch__btn:active {
+  transform: scale(0.98);
+}
+
+/* --------------------------------------------------------------------------
+   3d. Hero responsive
+   -------------------------------------------------------------------------- */
+
+@media screen and (max-width: 991px) {
+  .ch__heading {
+    font-size: 38px;
+  }
+
+  .ch__content-inner {
+    max-width: 60%;
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .ch__media {
+    min-height: var(--ch-min-height-mobile, 400px);
+  }
+
+  .ch__image {
+    min-height: var(--ch-min-height-mobile, 400px);
+  }
+
+  /* Show mobile image if available, hide desktop */
+  .ch__image--mobile {
+    display: block;
+    min-height: var(--ch-min-height-mobile, 400px);
+  }
+
+  .ch__image--mobile ~ .ch__image:not(.ch__image--mobile) {
     display: none;
   }
 
-  /* Mobile padding overrides */
-  @media screen and (max-width: 749px) {
-    #ProductGrid-{{ section.id }} {
-      --padding-block-start: {{ section.settings.mobile-padding-block-start | default: section.settings.padding-block-start | default: 60 }}px;
-      --padding-block-end: {{ section.settings.mobile-padding-block-end | default: section.settings.padding-block-end | default: 60 }}px;
-      --padding-inline-start: {{ section.settings.mobile-padding-inline-start | default: section.settings.padding-inline-start | default: 0 }}px;
-      --padding-inline-end: {{ section.settings.mobile-padding-inline-end | default: section.settings.padding-inline-end | default: 0 }}px;
-    }
+  /* Reverse order: hide desktop when mobile exists */
+  .ch__media:has(.ch__image--mobile) > .ch__image:first-child {
+    display: none;
   }
-</style>
 
-{%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  .ch__heading {
+    font-size: 32px;
+  }
 
-<section
-  id="ProductGrid-{{ section.id }}"
-  class="custom-product-grid section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style{% if show_title %} custom-product-grid--show-title{% endif %}{% if show_price %} custom-product-grid--show-price{% endif %}{% if show_description %} custom-product-grid--show-description{% endif %}"
-  style="{% render 'spacing-padding', settings: section.settings %}"
-  data-section-id="{{ section.id }}"
-  data-section-type="custom-product-grid"
-  data-card-click-action="{{ card_click_action }}"
-  data-button-text="{{ button_text | escape }}"
->
+  .ch__description {
+    font-size: 13px;
+  }
 
-  {%- comment -%} Section heading {%- endcomment -%}
-  {%- if section.settings.heading != blank -%}
-    <h2 class="custom-product-grid__heading">{{ section.settings.heading }}</h2>
-  {%- endif -%}
-
-  {%- comment -%}
-    Product cards grid — rendered via content_for 'blocks' for proper
-    theme-level block rendering. Each block embeds its own product JSON
-    data for the popup JS. Display limit handled via CSS :nth-child above.
-  {%- endcomment -%}
-  <div class="custom-product-grid__grid">
-    {%- content_for 'blocks' -%}
-  </div>
-
-  {%- comment -%}
-    ========================================================================
-    Product Popup — rendered via reusable snippet so the popup + JS can be
-    shared by any section that contains custom-product-card blocks.
-    ========================================================================
-  {%- endcomment -%}
-  {% render 'custom-product-popup',
-    section_id: section.id,
-    parent_id: grid_parent_id,
-    card_click_action: card_click_action,
-    button_text: button_text
-  %}
-
-</section>
-
-{% schema %}
-{
-  "name": "Custom Product Grid",
-  "tag": "section",
-  "class": "custom-product-grid-section",
-  "settings": [
-    {
-      "type": "header",
-      "content": "t:content.layout"
-    },
-    {
-      "type": "select",
-      "id": "section_width",
-      "label": "t:settings.section_width",
-      "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
-      ],
-      "default": "full-width"
-    },
-    {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:settings.color_scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:settings.columns"
-    },
-    {
-      "type": "range",
-      "id": "columns",
-      "label": "t:settings.columns",
-      "min": 2,
-      "max": 5,
-      "step": 1,
-      "default": 3
-    },
-    {
-      "type": "select",
-      "id": "columns_mobile",
-      "label": "t:settings.mobile_columns",
-      "options": [
-        {
-          "value": "1",
-          "label": "1"
-        },
-        {
-          "value": "2",
-          "label": "2"
-        }
-      ],
-      "default": "2"
-    },
-    {
-      "type": "range",
-      "id": "products_to_show",
-      "label": "t:settings.products_per_page",
-      "min": 2,
-      "max": 12,
-      "step": 1,
-      "default": 6
-    },
-    {
-      "type": "header",
-      "content": "Card display"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_card_title",
-      "label": "Show title",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_card_price",
-      "label": "Show price",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_card_description",
-      "label": "Show description",
-      "default": false
-    },
-    {
-      "type": "header",
-      "content": "Card action"
-    },
-    {
-      "type": "select",
-      "id": "card_click_action",
-      "label": "Click action",
-      "options": [
-        {
-          "value": "popup",
-          "label": "View popup"
-        },
-        {
-          "value": "product_page",
-          "label": "View product detail"
-        },
-        {
-          "value": "add_to_cart",
-          "label": "Add to cart"
-        }
-      ],
-      "default": "popup"
-    },
-    {
-      "type": "text",
-      "id": "button_text",
-      "label": "Button text",
-      "default": "ADD TO CART"
-    },
-    {
-      "type": "header",
-      "content": "t:content.text"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "t:settings.heading",
-      "default": "Featured Products"
-    },
-    {
-      "type": "select",
-      "id": "heading_alignment",
-      "label": "t:settings.alignment",
-      "options": [
-        {
-          "value": "left",
-          "label": "t:options.left"
-        },
-        {
-          "value": "center",
-          "label": "t:options.center"
-        },
-        {
-          "value": "right",
-          "label": "t:options.right"
-        }
-      ],
-      "default": "left"
-    },
-    {
-      "type": "range",
-      "id": "heading_size",
-      "label": "t:content.heading_size",
-      "min": 14,
-      "max": 48,
-      "step": 1,
-      "unit": "px",
-      "default": 20
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
-    },
-    {
-      "type": "range",
-      "id": "padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 60
-    },
-    {
-      "type": "range",
-      "id": "padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 60
-    },
-    {
-      "type": "range",
-      "id": "padding-inline-start",
-      "label": "t:settings.left",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "padding-inline-end",
-      "label": "t:settings.right",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "header",
-      "content": "Mobile padding"
-    },
-    {
-      "type": "range",
-      "id": "mobile-padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "mobile-padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "mobile-padding-inline-start",
-      "label": "t:settings.left",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "mobile-padding-inline-end",
-      "label": "t:settings.right",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    }
-  ],
-  "blocks": [
-    {
-      "type": "custom-product-card"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Custom Product Grid",
-      "blocks": [
-        { "type": "custom-product-card" },
-        { "type": "custom-product-card" },
-        { "type": "custom-product-card" },
-        { "type": "custom-product-card" },
-        { "type": "custom-product-card" },
-        { "type": "custom-product-card" }
-      ]
-    }
-  ]
+  .ch__btn {
+    padding: 12px 24px;
+    font-size: 11px;
+  }
 }
-{% endschema %}
+
+/* ==========================================================================
+   4. PRODUCT GRID SECTION
+   ========================================================================== */
+
+/* Grid section wrapper — relies on theme .section--page-width / .section--full-width for width */
+.custom-product-grid {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Section heading above the grid — size & alignment driven by section settings */
+.custom-product-grid__heading {
+  font-size: var(--cpg-heading-size, 20px);
+  font-weight: 400;
+  text-align: var(--cpg-heading-align, left);
+  margin-bottom: 24px;
+  color: var(--color-foreground);
+}
+
+/* Dynamic column grid layout for product cards */
+.custom-product-grid__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cpg-columns, 3), 1fr);
+  gap: var(--custom-grid-gap);
+}
+
+/* Individual product card — flat, borderless per design */
+.custom-product-grid__card {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Product image wrapper with aspect ratio */
+.custom-product-grid__image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: rgba(var(--color-foreground-rgb), 0.04);
+}
+
+/* Product image: fills container, covers area */
+.custom-product-grid__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.custom-product-grid__card:hover .custom-product-grid__image {
+  transform: scale(1.03);
+}
+
+/* Clickable hotspot circle — centered on product image per design */
+.custom-product-grid__hotspot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--custom-transition-speed) ease;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.custom-product-grid__hotspot:hover {
+  background: var(--custom-color-white);
+  border-color: rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Plus icon inside hotspot */
+.custom-product-grid__hotspot-icon {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: none;
+  color: var(--custom-color-black);
+}
+
+/* Product info below image — hidden by default, toggled via section modifier classes */
+.custom-product-grid__info {
+  display: none;
+  padding: 8px 0 0;
+}
+
+/* Show info container when any card display setting is active */
+.custom-product-grid--show-title .custom-product-grid__info,
+.custom-product-grid--show-price .custom-product-grid__info,
+.custom-product-grid--show-description .custom-product-grid__info {
+  display: block;
+}
+
+/* Individual card elements: hidden by default, shown by section class */
+.custom-product-grid__title {
+  font-size: 14px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--color-foreground);
+  display: none;
+}
+
+.custom-product-grid__price {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0 0;
+  color: var(--color-foreground);
+  display: none;
+}
+
+.custom-product-grid__description {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 4px 0 0;
+  color: var(--color-foreground);
+  opacity: 0.7;
+  display: none;
+}
+
+.custom-product-grid--show-title .custom-product-grid__title { display: block; }
+.custom-product-grid--show-price .custom-product-grid__price { display: block; }
+.custom-product-grid--show-description .custom-product-grid__description { display: block; }
+
+/* ==========================================================================
+   5. PRODUCT POPUP / MODAL
+   ========================================================================== */
+
+/* Full-screen overlay backdrop */
+.custom-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: var(--custom-popup-z-index);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--custom-transition-speed) ease,
+              visibility var(--custom-transition-speed) ease;
+}
+
+/* Active state: visible overlay */
+.custom-popup-overlay--active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Popup container: vertical layout — top row + bottom section */
+.custom-popup {
+  background: var(--custom-color-white);
+  border-radius: 0;
+  max-width: 380px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transform: scale(0.95);
+  transition: transform var(--custom-transition-speed) ease;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  font-family: var(--font-body--family);
+}
+
+/* Scale in when active */
+.custom-popup-overlay--active .custom-popup {
+  transform: scale(1);
+}
+
+/* Close button top-right corner — plain X */
+.custom-popup__close {
+  position: absolute;
+  top: 16px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: opacity var(--custom-transition-speed) ease;
+  color: var(--custom-color-black);
+  line-height: 1;
+  padding: 0;
+}
+
+.custom-popup__close:hover {
+  opacity: 0.6;
+}
+
+/* Top row: image (left ~40%) + info (right ~60%) side by side */
+.custom-popup__top {
+  display: flex;
+  flex-direction: row;
+  padding: 24px 24px 16px;
+  gap: 16px;
+}
+
+/* Product image in top row — ~40% width, square aspect */
+.custom-popup__image-wrapper {
+  flex: 0 0 40%;
+  width: 40%;
+  aspect-ratio: 1 / 1;
+}
+
+.custom-popup__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Product info beside the image */
+.custom-popup__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 0;
+}
+
+/* Product name */
+.custom-popup__name {
+  font-family: var(--font-heading--family);
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0;
+  color: var(--custom-color-black);
+  line-height: 1.35;
+}
+
+/* Product price */
+.custom-popup__price {
+  font-family: var(--font-body--family);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--custom-color-black);
+  margin: 2px 0 0;
+}
+
+/* Product description */
+.custom-popup__description {
+  font-family: var(--font-body--family);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--custom-color-gray);
+  margin: 4px 0 0;
+}
+
+/* Bottom section: variants + ATC — full width */
+.custom-popup__bottom {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Variant option group in popup */
+.custom-popup__variant-group {
+  margin-bottom: 12px;
+}
+
+.custom-popup__variant-label {
+  font-family: var(--font-body--family);
+  font-size: 15px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  margin-bottom: 10px;
+  color: var(--custom-color-black);
+  display: block;
+}
+
+/* Variant options container (flex row of buttons) */
+.custom-popup__variant-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Color options: 2-column grid, no gap — items share borders */
+.custom-popup__variant-options--color {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+/* Individual variant option button (generic) */
+.custom-popup__variant-option {
+  padding: 8px 16px;
+  border: 1px solid var(--custom-color-border);
+  border-radius: 6px;
+  background: var(--custom-color-white);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all var(--custom-transition-speed) ease;
+  color: var(--custom-color-black);
+}
+
+.custom-popup__variant-option:hover {
+  border-color: var(--custom-color-black);
+}
+
+/* Selected variant option: dark border highlight */
+.custom-popup__variant-option--selected {
+  background: var(--custom-color-black);
+  color: var(--custom-color-white);
+  border-color: var(--custom-color-black);
+}
+
+/* Unavailable variant: dimmed and not clickable */
+.custom-popup__variant-option--unavailable {
+  opacity: 0.4;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+/* --------------------------------------------------------------------------
+   Color variant — div wrapper with color swatch + button
+   Items sit side by side with shared borders (table-cell look).
+   -------------------------------------------------------------------------- */
+
+/* Wrapper div: flex row, 1px border — shared with adjacent items */
+.custom-popup__color-item {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  border: 1px solid var(--custom-color-black);
+  border-radius: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--custom-transition-speed) ease;
+}
+
+/* Collapse left border on the second item to avoid double border */
+.custom-popup__color-item:nth-child(2) {
+  border-left: none;
+}
+
+.custom-popup__color-item:hover {
+  border-color: var(--custom-color-black);
+}
+
+/* Color swatch span: narrow strip showing the actual color */
+.custom-popup__color-swatch {
+  flex: 0 0 6%;
+  width: 6%;
+  border-right: 1px solid var(--custom-color-black);
+}
+
+/* Button: remaining width, shows color name text */
+.custom-popup__color-btn {
+  flex: 1;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 0;
+  background: var(--custom-color-white);
+  cursor: pointer;
+  transition: background var(--custom-transition-speed) ease,
+              color var(--custom-transition-speed) ease;
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: var(--font-body--family);
+  font-size: 15px;
+  font-weight: 400;
+  text-align: left;
+  color: var(--custom-color-black);
+}
+
+/* Selected state: button bg black, text white — swatch keeps showing color */
+.custom-popup__color-item.custom-popup__variant-option--selected .custom-popup__color-btn {
+  background: var(--custom-color-black);
+  color: var(--custom-color-white);
+}
+
+/* --------------------------------------------------------------------------
+   Size select dropdown with vertical separator + chevron compartment
+   Border is black, text centered, separator spans full height.
+   -------------------------------------------------------------------------- */
+.custom-popup__select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Vertical separator bar — full height, black, divides text from chevron */
+.custom-popup__select-wrapper::before {
+  content: '';
+  position: absolute;
+  right: 48px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--custom-color-black);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Chevron icon — centered within the right compartment */
+.custom-popup__select-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.custom-popup__variant-select {
+  width: 100%;
+  padding: 14px 56px 14px 16px;
+  border: 1px solid var(--custom-color-black);
+  border-radius: 0;
+  background: var(--custom-color-white);
+  background-image: none;
+  font-family: var(--font-body--family);
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--custom-color-black);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  box-shadow: none;
+  text-align: center;
+  text-align-last: center;
+  transition: border-color var(--custom-transition-speed) ease;
+}
+
+/* Remove native browser select arrow and separator */
+.custom-popup__variant-select::-ms-expand {
+  display: none;
+}
+
+.custom-popup__variant-select::-webkit-inner-spin-button,
+.custom-popup__variant-select::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-popup__variant-select:focus {
+  outline: none;
+  border-color: var(--custom-color-black);
+}
+
+/* Style native dropdown options — centered text */
+.custom-popup__variant-select option {
+  text-align: center;
+}
+
+/* Add to Cart button — centered text, arrow positioned far right */
+.custom-popup__add-to-cart {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--custom-color-black);
+  color: var(--custom-color-white);
+  border: none;
+  font-family: var(--font-body--family);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--custom-transition-speed) ease;
+  margin-top: 8px;
+  text-decoration: none;
+}
+
+.custom-popup__add-to-cart:hover {
+  background: var(--custom-color-dark);
+  color: var(--custom-color-white);
+}
+
+.custom-popup__add-to-cart:active {
+  transform: scale(0.98);
+}
+
+/* ATC button text — centered */
+.custom-popup__atc-text {
+  pointer-events: none;
+}
+
+/* ATC arrow — positioned absolutely on the far right */
+.custom-popup__atc-arrow {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  pointer-events: none;
+  transition: transform var(--custom-transition-speed) ease;
+}
+
+/* Long arrow: horizontal line + arrowhead */
+.custom-popup__atc-arrow::before {
+  content: '';
+  display: inline-block;
+  width: 40px;
+  height: 1.5px;
+  background: currentColor;
+  margin-right: -2px;
+}
+
+.custom-popup__atc-arrow::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.custom-popup__add-to-cart:hover .custom-popup__atc-arrow {
+  right: 20px;
+}
+
+/* Disabled state for Add to Cart button */
+.custom-popup__add-to-cart:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading spinner for add-to-cart feedback */
+.custom-popup__add-to-cart--loading {
+  pointer-events: none;
+  position: relative;
+}
+
+.custom-popup__add-to-cart--loading .custom-popup__atc-text,
+.custom-popup__add-to-cart--loading .custom-popup__atc-arrow {
+  visibility: hidden;
+}
+
+.custom-popup__add-to-cart--loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--custom-color-white);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: custom-spinner 0.6s linear infinite;
+}
+
+@keyframes custom-spinner {
+  to { transform: rotate(360deg); }
+}
+
+/* Success message after adding to cart */
+.custom-popup__success-message {
+  text-align: center;
+  color: #2e7d32;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px;
+  background: #e8f5e9;
+  border-radius: 6px;
+  display: none;
+}
+
+.custom-popup__success-message--visible {
+  display: block;
+}
+
+/* ==========================================================================
+   6. RESPONSIVE — Product Grid & Popup
+   ========================================================================== */
+
+/* Tablet: 2-column grid */
+@media screen and (max-width: 991px) {
+  .custom-product-grid__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .custom-product-grid__heading {
+    font-size: calc(var(--cpg-heading-size, 20px) * 0.9);
+  }
+}
+
+/* Mobile: stacked popup and adjusted grid */
+@media screen and (max-width: 749px) {
+  .custom-product-grid__grid {
+    grid-template-columns: repeat(var(--cpg-columns-mobile, 2), 1fr);
+    gap: 12px;
+  }
+
+  .custom-product-grid__heading {
+    font-size: calc(var(--cpg-heading-size, 20px) * 0.8);
+    margin-bottom: 16px;
+  }
+
+  /* Popup on mobile */
+  .custom-popup {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .custom-popup__top {
+    padding: 16px 16px 12px;
+    gap: 14px;
+  }
+
+  .custom-popup__bottom {
+    padding: 0 16px 20px;
+    gap: 12px;
+  }
+
+  .custom-popup__name {
+    font-size: 14px;
+  }
+
+  .custom-popup__price {
+    font-size: 14px;
+  }
+
+  .custom-popup__description {
+    font-size: 11px;
+  }
+}
+
+/* Extra small mobile */
+@media screen and (max-width: 479px) {
+  .custom-product-grid__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+}
