@@ -264,7 +264,11 @@
         "padding-block-start": 20,
         "padding-block-end": 60,
         "padding-inline-start": 40,
-        "padding-inline-end": 40
+        "padding-inline-end": 40,
+        "mobile-padding-block-start": 40,
+        "mobile-padding-block-end": 40,
+        "mobile-padding-inline-start": 10,
+        "mobile-padding-inline-end": 10
       }
     }
   },
