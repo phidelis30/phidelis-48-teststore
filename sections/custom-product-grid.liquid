@@ -17,6 +17,11 @@
     --cpg-heading-size: {{ heading_size }}px;
     --cpg-heading-align: {{ heading_alignment }};
   }
+
+  /* Hide cards beyond the products_to_show limit */
+  #ProductGrid-{{ section.id }} .custom-product-grid__grid > .custom-product-grid__card:nth-child(n + {{ products_to_show | plus: 1 }}) {
+    display: none;
+  }
 </style>
 
 <section
@@ -33,50 +38,12 @@
   {%- endif -%}
 
   {%- comment -%}
-    Product cards grid — manual loop with limit so the popup JS
-    can access product data and bind click handlers correctly.
+    Product cards grid — rendered via content_for 'blocks' for proper
+    theme-level block rendering. Each block embeds its own product JSON
+    data for the popup JS. Display limit handled via CSS :nth-child above.
   {%- endcomment -%}
   <div class="custom-product-grid__grid">
-    {%- for block in section.blocks limit: products_to_show -%}
-      {%- assign product = block.settings.product -%}
-      {%- if product != blank -%}
-        <div
-          class="custom-product-grid__card"
-          data-product-handle="{{ product.handle }}"
-          data-block-id="{{ block.id }}"
-          {{ block.shopify_attributes }}
-        >
-          <div class="custom-product-grid__image-wrapper">
-            {%- if product.featured_image != blank -%}
-              <img
-                class="custom-product-grid__image"
-                src="{{ product.featured_image | image_url: width: 600 }}"
-                alt="{{ product.featured_image.alt | escape }}"
-                width="600"
-                height="600"
-                loading="lazy"
-              >
-            {%- else -%}
-              {{ 'product-1' | placeholder_svg_tag: 'custom-product-grid__image' }}
-            {%- endif -%}
-
-            <button
-              class="custom-product-grid__hotspot"
-              type="button"
-              aria-label="View {{ product.title | escape }} details"
-              data-popup-trigger="{{ product.handle }}"
-            >
-              <span class="custom-product-grid__hotspot-icon">+</span>
-            </button>
-          </div>
-
-          <div class="custom-product-grid__info">
-            <h3 class="custom-product-grid__title">{{ product.title }}</h3>
-            <p class="custom-product-grid__price">{{ product.price | money }}</p>
-          </div>
-        </div>
-      {%- endif -%}
-    {%- endfor -%}
+    {%- content_for 'blocks' -%}
   </div>
 
   {%- comment -%}
@@ -123,51 +90,6 @@
       </div>
     </div>
   </div>
-
-  {%- comment -%}
-    ========================================================================
-    Product Data Store
-    Serializes all block product data as JSON so vanilla JS can access it
-    without additional API calls. Includes variants, options, and images.
-    ========================================================================
-  {%- endcomment -%}
-  <script type="application/json" id="CustomProductData-{{ section.id }}">
-    {
-      {%- for block in section.blocks -%}
-        {%- assign product = block.settings.product -%}
-        {%- if product != blank -%}
-          "{{ product.handle }}": {
-            "id": {{ product.id }},
-            "title": {{ product.title | json }},
-            "handle": {{ product.handle | json }},
-            "description": {{ product.description | strip_html | truncate: 300 | json }},
-            "price": {{ product.price | money | json }},
-            "image": {{ product.featured_image | image_url: width: 800 | json }},
-            "imageAlt": {{ product.featured_image.alt | default: product.title | json }},
-            "options": [
-              {%- for option in product.options_with_values -%}
-                {
-                  "name": {{ option.name | json }},
-                  "values": {{ option.values | json }}
-                }{%- unless forloop.last -%},{%- endunless -%}
-              {%- endfor -%}
-            ],
-            "variants": [
-              {%- for variant in product.variants -%}
-                {
-                  "id": {{ variant.id }},
-                  "title": {{ variant.title | json }},
-                  "price": {{ variant.price | money | json }},
-                  "available": {{ variant.available }},
-                  "options": {{ variant.options | json }}
-                }{%- unless forloop.last -%},{%- endunless -%}
-              {%- endfor -%}
-            ]
-          }{%- unless forloop.last -%},{%- endunless -%}
-        {%- endif -%}
-      {%- endfor -%}
-    }
-  </script>
 
   {%- comment -%}
     ========================================================================
@@ -220,17 +142,22 @@
     var successMsg = overlay.querySelector('.custom-popup__success-message');
 
     /* ------------------------------------------------------------------
-       LOAD PRODUCT DATA FROM JSON STORE
+       LOAD PRODUCT DATA FROM EMBEDDED BLOCK SCRIPTS
+       Each block outputs its own <script class="cpg-product-data"> tag
+       with the product JSON inside the card element.
        ------------------------------------------------------------------ */
-    var dataEl = document.getElementById('CustomProductData-' + sectionId);
     var productData = {};
-    if (dataEl) {
+    var dataScripts = document.querySelectorAll('#ProductGrid-' + sectionId + ' .cpg-product-data');
+    dataScripts.forEach(function(script) {
       try {
-        productData = JSON.parse(dataEl.textContent);
+        var data = JSON.parse(script.textContent);
+        if (data && data.handle) {
+          productData[data.handle] = data;
+        }
       } catch (e) {
         console.error('Custom Product Grid: Failed to parse product data', e);
       }
-    }
+    });
 
     /* Load Soft Winter Jacket data if available */
     var softWinterJacketData = null;

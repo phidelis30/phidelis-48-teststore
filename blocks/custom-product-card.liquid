@@ -79,6 +79,38 @@
       <h3 class="custom-product-grid__title">{{ product.title }}</h3>
       <p class="custom-product-grid__price">{{ product.price | money }}</p>
     </div>
+
+    {%- comment -%} Embedded product data for popup JS (hidden script, no visual impact) {%- endcomment -%}
+    <script type="application/json" class="cpg-product-data">
+      {
+        "handle": {{ product.handle | json }},
+        "id": {{ product.id }},
+        "title": {{ product.title | json }},
+        "description": {{ product.description | strip_html | truncate: 300 | json }},
+        "price": {{ product.price | money | json }},
+        "image": {{ product.featured_image | image_url: width: 800 | json }},
+        "imageAlt": {{ product.featured_image.alt | default: product.title | json }},
+        "options": [
+          {%- for option in product.options_with_values -%}
+            {
+              "name": {{ option.name | json }},
+              "values": {{ option.values | json }}
+            }{%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        ],
+        "variants": [
+          {%- for variant in product.variants -%}
+            {
+              "id": {{ variant.id }},
+              "title": {{ variant.title | json }},
+              "price": {{ variant.price | money | json }},
+              "available": {{ variant.available }},
+              "options": {{ variant.options | json }}
+            }{%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        ]
+      }
+    </script>
   </div>
 {%- endif -%}
 
