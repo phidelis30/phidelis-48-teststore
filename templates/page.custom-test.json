@@ -43,7 +43,7 @@
             "link": "",
             "style": "primary",
             "content_position": "bottom-left",
-            "content_position_mobile": "top-left"
+            "content_position_mobile": "bottom-center"
           }
         }
       },
