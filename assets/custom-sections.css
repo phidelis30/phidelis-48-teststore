@@ -381,49 +381,56 @@
 }
 
 /* --------------------------------------------------------------------------
-   3a-mobile. Mobile content position overrides
-   Uses .ch__content.ch__content-mobile--* (specificity 0,2,0) to guarantee
-   override of the desktop .ch__content--* rules (specificity 0,1,0).
+   3a-mobile. Per-block mobile positioning via CSS Grid + display:contents
+   On mobile the hero becomes a 3×3 grid. The desktop group wrappers
+   (.ch__content / .ch__content-inner) use display:contents so each block
+   element becomes an independent grid item placed by .ch__block-mobile--*.
    -------------------------------------------------------------------------- */
 @media screen and (max-width: 749px) {
+  /* Hero becomes a 3×3 grid on mobile */
+  .ch {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+  }
+
+  /* Background image spans the full grid */
+  .ch .ch__media {
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+  }
+
+  /* Desktop group wrappers become invisible — children promoted to grid items */
+  .ch .ch__content,
+  .ch .ch__content-inner {
+    display: contents;
+  }
+
+  /* Block elements as grid items: appear above background, clickable */
+  .ch .ch__subtitle,
+  .ch .ch__heading,
+  .ch .ch__description,
+  .ch .ch__btn {
+    z-index: 1;
+    pointer-events: auto;
+  }
+
+  /* ---- Per-block mobile position classes (9-point grid) ---- */
+
   /* Top row */
-  .ch__content.ch__content-mobile--top-left { justify-content: flex-start; align-items: flex-start; }
-  .ch__content.ch__content-mobile--top-center { justify-content: center; align-items: flex-start; }
-  .ch__content.ch__content-mobile--top-right { justify-content: flex-end; align-items: flex-start; }
+  .ch__block-mobile--top-left      { grid-column: 1; grid-row: 1; align-self: start;  justify-self: start;  text-align: left; }
+  .ch__block-mobile--top-center    { grid-column: 2; grid-row: 1; align-self: start;  justify-self: center; text-align: center; }
+  .ch__block-mobile--top-right     { grid-column: 3; grid-row: 1; align-self: start;  justify-self: end;    text-align: right; }
 
   /* Center row */
-  .ch__content.ch__content-mobile--center-left { justify-content: flex-start; align-items: center; }
-  .ch__content.ch__content-mobile--center { justify-content: center; align-items: center; }
-  .ch__content.ch__content-mobile--center-right { justify-content: flex-end; align-items: center; }
+  .ch__block-mobile--center-left   { grid-column: 1; grid-row: 2; align-self: center; justify-self: start;  text-align: left; }
+  .ch__block-mobile--center        { grid-column: 2; grid-row: 2; align-self: center; justify-self: center; text-align: center; }
+  .ch__block-mobile--center-right  { grid-column: 3; grid-row: 2; align-self: center; justify-self: end;    text-align: right; }
 
   /* Bottom row */
-  .ch__content.ch__content-mobile--bottom-left { justify-content: flex-start; align-items: flex-end; }
-  .ch__content.ch__content-mobile--bottom-center { justify-content: center; align-items: flex-end; }
-  .ch__content.ch__content-mobile--bottom-right { justify-content: flex-end; align-items: flex-end; }
-
-  /* Mobile text alignment: center column (specificity 0,3,0 beats desktop 0,2,0) */
-  .ch__content.ch__content-mobile--top-center .ch__content-inner,
-  .ch__content.ch__content-mobile--center .ch__content-inner,
-  .ch__content.ch__content-mobile--bottom-center .ch__content-inner {
-    text-align: center;
-    align-items: center;
-  }
-
-  /* Mobile text alignment: right column */
-  .ch__content.ch__content-mobile--top-right .ch__content-inner,
-  .ch__content.ch__content-mobile--center-right .ch__content-inner,
-  .ch__content.ch__content-mobile--bottom-right .ch__content-inner {
-    text-align: right;
-    align-items: flex-end;
-  }
-
-  /* Mobile text alignment: left column (reset from desktop center/right) */
-  .ch__content.ch__content-mobile--top-left .ch__content-inner,
-  .ch__content.ch__content-mobile--center-left .ch__content-inner,
-  .ch__content.ch__content-mobile--bottom-left .ch__content-inner {
-    text-align: left;
-    align-items: flex-start;
-  }
+  .ch__block-mobile--bottom-left   { grid-column: 1; grid-row: 3; align-self: end;    justify-self: start;  text-align: left; }
+  .ch__block-mobile--bottom-center { grid-column: 2; grid-row: 3; align-self: end;    justify-self: center; text-align: center; }
+  .ch__block-mobile--bottom-right  { grid-column: 3; grid-row: 3; align-self: end;    justify-self: end;    text-align: right; }
 }
 
 /* --------------------------------------------------------------------------
@@ -557,14 +564,6 @@
   /* Reverse order: hide desktop when mobile exists */
   .ch__media:has(.ch__image--mobile) > .ch__image:first-child {
     display: none;
-  }
-
-  .ch__content {
-    padding: 24px;
-  }
-
-  .ch__content-inner {
-    max-width: 100%;
   }
 
   .ch__heading {
