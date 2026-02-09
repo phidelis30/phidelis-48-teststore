@@ -22,6 +22,12 @@
     --cpg-columns-mobile: {{ columns_mobile }};
     --cpg-heading-size: {{ heading_size }}px;
     --cpg-heading-align: {{ heading_alignment }};
+
+    /* Desktop padding — set here instead of inline so mobile @media can override */
+    --padding-block-start: {{ section.settings.padding-block-start | default: 60 }}px;
+    --padding-block-end: {{ section.settings.padding-block-end | default: 60 }}px;
+    --padding-inline-start: {{ section.settings.padding-inline-start | default: 0 }}px;
+    --padding-inline-end: {{ section.settings.padding-inline-end | default: 0 }}px;
   }
 
   /* Hide cards beyond the products_to_show limit */
@@ -32,10 +38,10 @@
   /* Mobile padding overrides */
   @media screen and (max-width: 749px) {
     #ProductGrid-{{ section.id }} {
-      --padding-block-start: {{ section.settings.mobile-padding-block-start | default: section.settings.padding-block-start | default: 60 }}px;
-      --padding-block-end: {{ section.settings.mobile-padding-block-end | default: section.settings.padding-block-end | default: 60 }}px;
-      --padding-inline-start: {{ section.settings.mobile-padding-inline-start | default: section.settings.padding-inline-start | default: 0 }}px;
-      --padding-inline-end: {{ section.settings.mobile-padding-inline-end | default: section.settings.padding-inline-end | default: 0 }}px;
+      --padding-block-start: {{ section.settings.mobile-padding-block-start | default: 40 }}px;
+      --padding-block-end: {{ section.settings.mobile-padding-block-end | default: 40 }}px;
+      --padding-inline-start: {{ section.settings.mobile-padding-inline-start | default: 0 }}px;
+      --padding-inline-end: {{ section.settings.mobile-padding-inline-end | default: 0 }}px;
     }
   }
 </style>
@@ -46,7 +52,7 @@
 <section
   id="ProductGrid-{{ section.id }}"
   class="custom-product-grid section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style{% if show_title %} custom-product-grid--show-title{% endif %}{% if show_price %} custom-product-grid--show-price{% endif %}{% if show_description %} custom-product-grid--show-description{% endif %}"
-  style="{% render 'spacing-padding', settings: section.settings %}"
+  style=""
   data-section-id="{{ section.id }}"
   data-section-type="custom-product-grid"
   data-card-click-action="{{ card_click_action }}"
