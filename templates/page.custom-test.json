@@ -244,8 +244,8 @@
         "custom_product_card_dFWnga"
       ],
       "settings": {
-        "section_width": "page-width",
-        "color_scheme": "",
+        "section_width": "full-width",
+        "color_scheme": "scheme-1",
         "columns": 3,
         "columns_mobile": "2",
         "products_to_show": 6,
