@@ -30,6 +30,9 @@
   }
 </style>
 
+{%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
 <section
   id="ProductGrid-{{ section.id }}"
   class="custom-product-grid section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style{% if show_title %} custom-product-grid--show-title{% endif %}{% if show_price %} custom-product-grid--show-price{% endif %}{% if show_description %} custom-product-grid--show-description{% endif %}"

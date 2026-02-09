@@ -26,6 +26,9 @@
   }
 </style>
 
+{%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
 <section
   id="CustomBanner-{{ section.id }}"
   class="cb section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style"

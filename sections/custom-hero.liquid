@@ -27,6 +27,9 @@
   }
 </style>
 
+{%- comment -%} Background layer — required by Horizon theme (base.css forces .section to transparent) {%- endcomment -%}
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+
 <section
   id="CustomHero-{{ section.id }}"
   class="ch section section--{{ section_width }} color-{{ section.settings.color_scheme }} spacing-style"
