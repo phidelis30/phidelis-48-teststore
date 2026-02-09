@@ -23,6 +23,7 @@
     assign pad_bottom = block.settings.padding-block-end | default: 0
     assign pad_left = block.settings.padding-inline-start | default: 0
     assign pad_right = block.settings.padding-inline-end | default: 0
+    assign hotspot_position = block.settings.hotspot_position | default: 'center'
   -%}
 
   {%- capture card_styles -%}
@@ -65,7 +66,7 @@
 
       {%- comment -%} Hotspot circle button — opens popup on click {%- endcomment -%}
       <button
-        class="custom-product-grid__hotspot"
+        class="custom-product-grid__hotspot custom-product-grid__hotspot--{{ hotspot_position }}"
         type="button"
         aria-label="View {{ product.title | escape }} details"
         data-popup-trigger="{{ product.handle }}"
@@ -125,6 +126,23 @@
       "type": "product",
       "id": "product",
       "label": "t:names.product"
+    },
+    {
+      "type": "select",
+      "id": "hotspot_position",
+      "label": "Hotspot position",
+      "options": [
+        { "value": "top-left", "label": "Top left" },
+        { "value": "top-center", "label": "Top center" },
+        { "value": "top-right", "label": "Top right" },
+        { "value": "center-left", "label": "Center left" },
+        { "value": "center", "label": "Center" },
+        { "value": "center-right", "label": "Center right" },
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-center", "label": "Bottom center" },
+        { "value": "bottom-right", "label": "Bottom right" }
+      ],
+      "default": "center"
     },
     {
       "type": "checkbox",

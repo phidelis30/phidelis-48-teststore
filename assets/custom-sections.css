@@ -648,12 +648,9 @@
   transform: scale(1.03);
 }
 
-/* Clickable hotspot circle — centered on product image per design */
+/* Clickable hotspot circle — configurable position on product image */
 .custom-product-grid__hotspot {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 32px;
   height: 32px;
   background: rgba(255, 255, 255, 0.85);
@@ -671,8 +668,26 @@
 .custom-product-grid__hotspot:hover {
   background: var(--custom-color-white);
   border-color: rgba(0, 0, 0, 0.3);
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: scale(1.1);
 }
+
+/* Hotspot position variants — 9-point grid with 12px offset from edges */
+.custom-product-grid__hotspot--top-left      { top: 12px;  left: 12px; }
+.custom-product-grid__hotspot--top-center    { top: 12px;  left: 50%; transform: translateX(-50%); }
+.custom-product-grid__hotspot--top-right     { top: 12px;  right: 12px; }
+.custom-product-grid__hotspot--center-left   { top: 50%;   left: 12px; transform: translateY(-50%); }
+.custom-product-grid__hotspot--center        { top: 50%;   left: 50%; transform: translate(-50%, -50%); }
+.custom-product-grid__hotspot--center-right  { top: 50%;   right: 12px; transform: translateY(-50%); }
+.custom-product-grid__hotspot--bottom-left   { bottom: 12px; left: 12px; }
+.custom-product-grid__hotspot--bottom-center { bottom: 12px; left: 50%; transform: translateX(-50%); }
+.custom-product-grid__hotspot--bottom-right  { bottom: 12px; right: 12px; }
+
+/* Preserve transform on hover for positioned variants that use transform */
+.custom-product-grid__hotspot--top-center:hover    { transform: translateX(-50%) scale(1.1); }
+.custom-product-grid__hotspot--center-left:hover   { transform: translateY(-50%) scale(1.1); }
+.custom-product-grid__hotspot--center:hover        { transform: translate(-50%, -50%) scale(1.1); }
+.custom-product-grid__hotspot--center-right:hover  { transform: translateY(-50%) scale(1.1); }
+.custom-product-grid__hotspot--bottom-center:hover { transform: translateX(-50%) scale(1.1); }
 
 /* Plus icon inside hotspot */
 .custom-product-grid__hotspot-icon {
@@ -1219,6 +1234,26 @@
     font-size: calc(var(--cpg-heading-size, 20px) * 0.8);
     margin-bottom: 16px;
   }
+
+  /* Smaller hotspot button on mobile */
+  .custom-product-grid__hotspot {
+    width: 24px;
+    height: 24px;
+  }
+
+  .custom-product-grid__hotspot-icon {
+    font-size: 12px;
+  }
+
+  /* Tighter offset from edges on mobile */
+  .custom-product-grid__hotspot--top-left      { top: 8px;  left: 8px; }
+  .custom-product-grid__hotspot--top-center    { top: 8px; }
+  .custom-product-grid__hotspot--top-right     { top: 8px;  right: 8px; }
+  .custom-product-grid__hotspot--center-left   { left: 8px; }
+  .custom-product-grid__hotspot--center-right  { right: 8px; }
+  .custom-product-grid__hotspot--bottom-left   { bottom: 8px; left: 8px; }
+  .custom-product-grid__hotspot--bottom-center { bottom: 8px; }
+  .custom-product-grid__hotspot--bottom-right  { bottom: 8px; right: 8px; }
 
   /* Popup on mobile */
   .custom-popup {
