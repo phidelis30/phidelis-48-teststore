@@ -777,7 +777,7 @@
 /* Product name */
 .custom-popup__name {
   font-family: var(--font-heading--family);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 400;
   margin: 0;
   color: var(--custom-color-black);
@@ -787,7 +787,7 @@
 /* Product price */
 .custom-popup__price {
   font-family: var(--font-body--family);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--custom-color-black);
   margin: 2px 0 0;
@@ -796,7 +796,7 @@
 /* Product description */
 .custom-popup__description {
   font-family: var(--font-body--family);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--custom-color-gray);
   margin: 4px 0 0;
@@ -817,7 +817,7 @@
 
 .custom-popup__variant-label {
   font-family: var(--font-body--family);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 400;
   text-transform: none;
   letter-spacing: normal;
@@ -917,7 +917,7 @@
   text-transform: none;
   letter-spacing: 0;
   font-family: var(--font-body--family);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 400;
   text-align: left;
   color: var(--custom-color-black);
@@ -975,7 +975,7 @@
   background: var(--custom-color-white);
   background-image: none;
   font-family: var(--font-body--family);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 400;
   color: var(--custom-color-black);
   cursor: pointer;
@@ -1022,7 +1022,7 @@
   color: var(--custom-color-white);
   border: none;
   font-family: var(--font-body--family);
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
