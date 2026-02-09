@@ -381,6 +381,51 @@
 }
 
 /* --------------------------------------------------------------------------
+   3a-mobile. Mobile content position overrides
+   The ch__content-mobile--* classes override the desktop position on mobile.
+   -------------------------------------------------------------------------- */
+@media screen and (max-width: 749px) {
+  /* Top row */
+  .ch__content-mobile--top-left { justify-content: flex-start; align-items: flex-start; }
+  .ch__content-mobile--top-center { justify-content: center; align-items: flex-start; }
+  .ch__content-mobile--top-right { justify-content: flex-end; align-items: flex-start; }
+
+  /* Center row */
+  .ch__content-mobile--center-left { justify-content: flex-start; align-items: center; }
+  .ch__content-mobile--center { justify-content: center; align-items: center; }
+  .ch__content-mobile--center-right { justify-content: flex-end; align-items: center; }
+
+  /* Bottom row */
+  .ch__content-mobile--bottom-left { justify-content: flex-start; align-items: flex-end; }
+  .ch__content-mobile--bottom-center { justify-content: center; align-items: flex-end; }
+  .ch__content-mobile--bottom-right { justify-content: flex-end; align-items: flex-end; }
+
+  /* Mobile text alignment: center column */
+  .ch__content-mobile--top-center .ch__content-inner,
+  .ch__content-mobile--center .ch__content-inner,
+  .ch__content-mobile--bottom-center .ch__content-inner {
+    text-align: center;
+    align-items: center;
+  }
+
+  /* Mobile text alignment: right column */
+  .ch__content-mobile--top-right .ch__content-inner,
+  .ch__content-mobile--center-right .ch__content-inner,
+  .ch__content-mobile--bottom-right .ch__content-inner {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  /* Mobile text alignment: left column (reset from desktop center/right) */
+  .ch__content-mobile--top-left .ch__content-inner,
+  .ch__content-mobile--center-left .ch__content-inner,
+  .ch__content-mobile--bottom-left .ch__content-inner {
+    text-align: left;
+    align-items: flex-start;
+  }
+}
+
+/* --------------------------------------------------------------------------
    3b. Hero typography
    -------------------------------------------------------------------------- */
 

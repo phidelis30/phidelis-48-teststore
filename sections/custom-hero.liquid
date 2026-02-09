@@ -88,16 +88,19 @@
 
     {%- for position in all_positions -%}
       {%- assign has_blocks = false -%}
+      {%- assign group_mobile_pos = position -%}
       {%- for block in section.blocks -%}
         {%- assign block_pos = block.settings.content_position | default: 'bottom-left' -%}
         {%- if block_pos == position -%}
+          {%- unless has_blocks -%}
+            {%- assign group_mobile_pos = block.settings.content_position_mobile | default: position -%}
+          {%- endunless -%}
           {%- assign has_blocks = true -%}
-          {%- break -%}
         {%- endif -%}
       {%- endfor -%}
 
       {%- if has_blocks -%}
-        <div class="ch__content ch__content--{{ position }}">
+        <div class="ch__content ch__content--{{ position }} ch__content-mobile--{{ group_mobile_pos }}">
           <div class="ch__content-inner">
 
             {%- for block in section.blocks -%}
@@ -283,6 +286,23 @@
             { "value": "bottom-right", "label": "t:options.bottom_right" }
           ],
           "default": "bottom-left"
+        },
+        {
+          "type": "select",
+          "id": "content_position_mobile",
+          "label": "Mobile content position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
         }
       ]
     },
@@ -312,6 +332,23 @@
             { "value": "bottom-right", "label": "t:options.bottom_right" }
           ],
           "default": "bottom-left"
+        },
+        {
+          "type": "select",
+          "id": "content_position_mobile",
+          "label": "Mobile content position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
         }
       ]
     },
@@ -329,6 +366,23 @@
           "type": "select",
           "id": "content_position",
           "label": "t:settings.content_position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
+        },
+        {
+          "type": "select",
+          "id": "content_position_mobile",
+          "label": "Mobile content position",
           "options": [
             { "value": "top-left", "label": "t:options.top_left" },
             { "value": "top-center", "label": "t:options.top_center" },
@@ -373,6 +427,23 @@
           "type": "select",
           "id": "content_position",
           "label": "t:settings.content_position",
+          "options": [
+            { "value": "top-left", "label": "t:options.top_left" },
+            { "value": "top-center", "label": "t:options.top_center" },
+            { "value": "top-right", "label": "t:options.top_right" },
+            { "value": "center-left", "label": "t:options.center_left" },
+            { "value": "center", "label": "t:options.center" },
+            { "value": "center-right", "label": "t:options.center_right" },
+            { "value": "bottom-left", "label": "t:options.bottom_left" },
+            { "value": "bottom-center", "label": "t:options.bottom_center" },
+            { "value": "bottom-right", "label": "t:options.bottom_right" }
+          ],
+          "default": "bottom-left"
+        },
+        {
+          "type": "select",
+          "id": "content_position_mobile",
+          "label": "Mobile content position",
           "options": [
             { "value": "top-left", "label": "t:options.top_left" },
             { "value": "top-center", "label": "t:options.top_center" },
