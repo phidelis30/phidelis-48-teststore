@@ -126,24 +126,6 @@
     "custom-product-grid": {
       "type": "custom-product-grid",
       "blocks": {
-        "custom_product_card_EJUyme": {
-          "type": "custom-product-card",
-          "name": "Custom Product Card",
-          "settings": {
-            "product": "",
-            "inherit_color_scheme": true,
-            "color_scheme": "",
-            "border": "none",
-            "border_width": 1,
-            "border_opacity": 100,
-            "border_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
         "custom_product_card_fKcUc9": {
           "type": "custom-product-card",
           "name": "Custom Product Card",
@@ -254,7 +236,6 @@
         }
       },
       "block_order": [
-        "custom_product_card_EJUyme",
         "custom_product_card_fKcUc9",
         "custom_product_card_QNzkrw",
         "custom_product_card_xVgq6i",
@@ -263,7 +244,7 @@
         "custom_product_card_dFWnga"
       ],
       "settings": {
-        "section_width": "full-width",
+        "section_width": "page-width",
         "color_scheme": "",
         "columns": 3,
         "columns_mobile": "2",
