@@ -1010,16 +1010,17 @@
   text-align: center;
 }
 
-/* Add to Cart button — hero style, text left + long arrow right */
+/* Add to Cart button — centered text, arrow positioned far right */
 .custom-popup__add-to-cart {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
-  padding: 14px 24px;
-  background: var(--color-primary-button-background, var(--custom-color-black));
-  color: var(--color-primary-button-text, var(--custom-color-white));
-  border: 2px solid var(--color-primary-button-border, var(--custom-color-black));
+  padding: 16px 24px;
+  background: var(--custom-color-black);
+  color: var(--custom-color-white);
+  border: none;
   font-family: var(--font-body--family);
   font-size: 11px;
   font-weight: 600;
@@ -1033,22 +1034,25 @@
 }
 
 .custom-popup__add-to-cart:hover {
-  background: var(--color-primary-button-hover-background, var(--custom-color-dark));
-  color: var(--color-primary-button-hover-text, var(--custom-color-white));
-  border-color: var(--color-primary-button-hover-border, var(--custom-color-dark));
+  background: var(--custom-color-dark);
+  color: var(--custom-color-white);
 }
 
 .custom-popup__add-to-cart:active {
   transform: scale(0.98);
 }
 
-/* ATC button text (left side) */
+/* ATC button text — centered */
 .custom-popup__atc-text {
   pointer-events: none;
 }
 
-/* ATC long arrow icon (right side) — line + arrowhead via CSS */
+/* ATC arrow — positioned absolutely on the far right */
 .custom-popup__atc-arrow {
+  position: absolute;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   pointer-events: none;
@@ -1076,7 +1080,7 @@
 }
 
 .custom-popup__add-to-cart:hover .custom-popup__atc-arrow {
-  transform: translateX(4px);
+  right: 20px;
 }
 
 /* Disabled state for Add to Cart button */
