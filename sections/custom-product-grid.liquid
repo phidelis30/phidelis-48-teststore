@@ -356,10 +356,8 @@
             btn.setAttribute('data-option-name', option.name);
             btn.setAttribute('data-option-value', value);
 
-            /* Add colored left border accent using the color map */
+            /* Set the left border color accent using the color map */
             var hex = getColorHex(value);
-            btn.style.borderLeftWidth = '4px';
-            btn.style.borderLeftStyle = 'solid';
             btn.style.borderLeftColor = hex;
 
             /* Button text */
