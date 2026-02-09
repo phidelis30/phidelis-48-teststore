@@ -79,13 +79,14 @@
         {%- comment -%} Success message after add to cart {%- endcomment -%}
         <div class="custom-popup__success-message">Added to cart successfully!</div>
 
-        {%- comment -%} Add to Cart button {%- endcomment -%}
+        {%- comment -%} Add to Cart button with arrow icon {%- endcomment -%}
         <button
           class="custom-popup__add-to-cart"
           type="button"
           disabled
         >
-          ADD TO CART
+          <span class="custom-popup__atc-text">ADD TO CART</span>
+          <span class="custom-popup__atc-arrow">&rarr;</span>
         </button>
       </div>
     </div>
@@ -200,7 +201,7 @@
       /* Reset button and messages */
       addToCartBtn.disabled = true;
       addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
-      addToCartBtn.textContent = 'ADD TO CART';
+      addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow">&rarr;</span>';
       successMsg.classList.remove('custom-popup__success-message--visible');
 
       /* Show overlay with animation */
@@ -222,15 +223,52 @@
     }
 
     /* ------------------------------------------------------------------
+       COLOR MAP — Maps common color names to hex values for swatches.
+       Falls back to a neutral gray for unknown colors.
+       ------------------------------------------------------------------ */
+    var colorMap = {
+      'red': '#c0392b', 'grey': '#95a5a6', 'gray': '#95a5a6',
+      'black': '#1a1a1a', 'white': '#ffffff', 'blue': '#2980b9',
+      'navy': '#2c3e50', 'green': '#27ae60', 'pink': '#e91e8a',
+      'beige': '#d4c5a9', 'brown': '#8B4513', 'orange': '#e67e22',
+      'yellow': '#f1c40f', 'purple': '#8e44ad', 'cream': '#FFFDD0',
+      'ivory': '#FFFFF0', 'khaki': '#c3b091', 'olive': '#808000',
+      'burgundy': '#800020', 'coral': '#FF7F50', 'teal': '#008080',
+      'maroon': '#800000', 'tan': '#D2B48C', 'gold': '#CFB53B',
+      'silver': '#C0C0C0', 'charcoal': '#36454F', 'nude': '#E3BC9A',
+      'camel': '#C19A6B', 'lavender': '#E6E6FA', 'mint': '#98FF98',
+      'rose': '#FF007F', 'rust': '#B7410E', 'sand': '#C2B280',
+      'taupe': '#483C32', 'wine': '#722F37', 'sage': '#BCB88A',
+      'mauve': '#E0B0FF', 'plum': '#8E4585', 'blush': '#DE5D83',
+      'slate': '#708090', 'denim': '#1560BD', 'chocolate': '#7B3F00'
+    };
+
+    /**
+     * Resolves a color name to a hex value.
+     * Checks exact match first, then partial match.
+     */
+    function getColorHex(colorName) {
+      var lower = colorName.toLowerCase().trim();
+      if (colorMap[lower]) return colorMap[lower];
+      /* Partial match: check if any key is contained in the color name */
+      var keys = Object.keys(colorMap);
+      for (var i = 0; i < keys.length; i++) {
+        if (lower.indexOf(keys[i]) !== -1) return colorMap[keys[i]];
+      }
+      return '#cccccc'; /* Fallback neutral gray */
+    }
+
+    /* ------------------------------------------------------------------
        RENDER VARIANT OPTIONS
        Creates option buttons for each product option (e.g., Color, Size).
+       Color: large rectangular buttons with color swatch on the left.
+       Size: dropdown select with placeholder.
        ------------------------------------------------------------------ */
     function renderVariants(product) {
       popupVariants.innerHTML = '';
 
       /* If product has no options or only default option, skip rendering */
       if (!product.options || product.options.length === 0) {
-        /* Auto-select the first variant if no options */
         addToCartBtn.disabled = false;
         return;
       }
@@ -256,6 +294,9 @@
 
         /* Size option: render as a dropdown select */
         if (optionNameLower === 'size') {
+          var selectWrapper = document.createElement('div');
+          selectWrapper.className = 'custom-popup__select-wrapper';
+
           var select = document.createElement('select');
           select.className = 'custom-popup__variant-select';
           select.setAttribute('data-option-name', option.name);
@@ -279,9 +320,49 @@
             selectOption(option.name, this.value, group);
           });
 
-          group.appendChild(select);
+          selectWrapper.appendChild(select);
+          group.appendChild(selectWrapper);
+
+        /* Color option: render as large rectangular buttons with color swatch */
+        } else if (optionNameLower === 'color' || optionNameLower === 'colour') {
+          var optionsContainer = document.createElement('div');
+          optionsContainer.className = 'custom-popup__variant-options custom-popup__variant-options--color';
+
+          option.values.forEach(function(value) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'custom-popup__variant-option custom-popup__color-btn';
+            btn.setAttribute('data-option-name', option.name);
+            btn.setAttribute('data-option-value', value);
+
+            /* Color swatch on the left side of the button */
+            var swatch = document.createElement('span');
+            swatch.className = 'custom-popup__color-swatch';
+            swatch.style.backgroundColor = getColorHex(value);
+            /* Add border for light colors so swatch is visible */
+            var hex = getColorHex(value);
+            if (hex === '#ffffff' || hex === '#FFFDD0' || hex === '#FFFFF0' || hex === '#98FF98' || hex === '#E6E6FA') {
+              swatch.style.border = '1px solid #e0e0e0';
+            }
+            btn.appendChild(swatch);
+
+            /* Color name text on the right */
+            var nameSpan = document.createElement('span');
+            nameSpan.className = 'custom-popup__color-name';
+            nameSpan.textContent = value;
+            btn.appendChild(nameSpan);
+
+            btn.addEventListener('click', function() {
+              selectOption(option.name, value, optionsContainer);
+            });
+
+            optionsContainer.appendChild(btn);
+          });
+
+          group.appendChild(optionsContainer);
+
         } else {
-          /* Other options (Color, etc.): render as buttons */
+          /* Other options: render as standard buttons */
           var optionsContainer = document.createElement('div');
           optionsContainer.className = 'custom-popup__variant-options';
 
@@ -293,7 +374,6 @@
             btn.setAttribute('data-option-name', option.name);
             btn.setAttribute('data-option-value', value);
 
-            /* Click handler: select this variant option */
             btn.addEventListener('click', function() {
               selectOption(option.name, value, optionsContainer);
             });
@@ -411,7 +491,7 @@
       .then(function() {
         /* Show success feedback */
         addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
-        addToCartBtn.textContent = 'ADDED!';
+        addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADDED!</span>';
         successMsg.classList.add('custom-popup__success-message--visible');
 
         /* Update cart count in header if a bubble/counter element exists */
@@ -419,19 +499,19 @@
 
         /* Reset button text after 2 seconds */
         setTimeout(function() {
-          addToCartBtn.textContent = 'ADD TO CART';
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow">&rarr;</span>';
           addToCartBtn.disabled = false;
         }, 2000);
       })
       .catch(function(error) {
         console.error('Custom Product Grid: Add to cart failed', error);
         addToCartBtn.classList.remove('custom-popup__add-to-cart--loading');
-        addToCartBtn.textContent = 'ERROR - TRY AGAIN';
+        addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ERROR - TRY AGAIN</span>';
         addToCartBtn.disabled = false;
 
         /* Reset error text after 2 seconds */
         setTimeout(function() {
-          addToCartBtn.textContent = 'ADD TO CART';
+          addToCartBtn.innerHTML = '<span class="custom-popup__atc-text">ADD TO CART</span><span class="custom-popup__atc-arrow">&rarr;</span>';
         }, 2000);
       });
     }
