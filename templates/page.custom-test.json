@@ -252,7 +252,7 @@
         "show_card_title": true,
         "show_card_price": true,
         "show_card_description": true,
-        "card_click_action": "add_to_cart",
+        "card_click_action": "product_page",
         "button_text": "ADD TO CART",
         "heading": "Featured Products",
         "heading_alignment": "left",
