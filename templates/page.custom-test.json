@@ -16,21 +16,24 @@
           "type": "caption",
           "settings": {
             "text": "",
-            "content_position": "bottom-left"
+            "content_position": "bottom-left",
+            "content_position_mobile": "bottom-left"
           }
         },
         "heading_HjQgjg": {
           "type": "heading",
           "settings": {
             "text": "The Gift Guide",
-            "content_position": "bottom-left"
+            "content_position": "bottom-left",
+            "content_position_mobile": "top-center"
           }
         },
         "description_7ez3Jf": {
           "type": "description",
           "settings": {
             "text": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.",
-            "content_position": "bottom-left"
+            "content_position": "bottom-left",
+            "content_position_mobile": "top-center"
           }
         },
         "button_wHDkV3": {
@@ -39,7 +42,8 @@
             "label": "SHOP NOW",
             "link": "",
             "style": "primary",
-            "content_position": "bottom-left"
+            "content_position": "bottom-left",
+            "content_position_mobile": "top-left"
           }
         }
       },
